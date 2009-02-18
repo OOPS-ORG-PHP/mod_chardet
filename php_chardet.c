@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.3 2009-02-18 16:03:30 oops Exp $
+  $Id: php_chardet.c,v 1.4 2009-02-18 17:03:03 oops Exp $
 */
 
 /*
@@ -381,7 +381,9 @@ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
+	char * pytmp = NULL;
 	char * pybuf = NULL;
+	size_t buflen;
 	int pos = 0;
 
 	if ( buf == NULL ) {
@@ -389,7 +391,18 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 		return -1;
 	}
 
-	pybuf = (char *) emalloc (sizeof (char) * (20 + strlen (buf) + 1));
+	buflen = strlen (buf);
+	pytmp = (char *) buf;
+
+	/*
+	 * replace python conflict charactors
+	 */
+	for ( pos=0; pos<buflen; pos++ ) {
+		if ( pytmp[pos] == '\'' || pytmp[pos] == '"' || pytmp[pos] == '\r' || pytmp[pos] == '\n' )
+			pytmp[pos] = ' ';
+	}
+
+	pybuf = (char *) emalloc (sizeof (char) * (20 + buflen + 1));
 
 	if ( pybuf == NULL ) {
 		(*obj)->status = MOZ_MEMLOC;
@@ -398,7 +411,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	PyRun_SimpleString ("detector.reset()");
 
-	sprintf (pybuf, "detector.feed(\"%s\")", buf);
+	sprintf (pybuf, "detector.feed(\"%s\")", pytmp);
 	if ( PyRun_SimpleString (pybuf) == -1 ) {
 		(*obj)->status = MOZ_DETECT_FAILURE;
 		SAFE_EFREE(pybuf);
