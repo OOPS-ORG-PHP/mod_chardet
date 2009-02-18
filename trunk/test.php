@@ -14,12 +14,28 @@ $fp = chardet_open ();
 
 $i=0;
 foreach ( $strings as $s ) {
+	#
+	# proto object chardet_detect (database handle, string[, mode])
+	#   database handle : return value of chardet_open () API
+	#   string          : strings for character set detecting
+	#   mode            : chardet library mode (CHARDET_ICU or CHARDET_MZO)
+	#                     default value is CHARDET_ICU
+	#
+	#                     CHARDET_ICU -> detect with ICU library (default mode)
+	#                     CHARDET_MOZ -> detect with Mozilla Universal Chardet library
+	#                                    with Python C API (use python chardet)
+	#
+	#                     If you give Python chardet option on buildtime, CHARDET_MOZ
+	#                     value is set 1. If value of CHARDET_MOZ is -1, chardet
+	#                     extension don't support CHARDET_MOZ mode
+	#
+	#  return value type : object -> encoding    : detecting charset
+	#                                langs       : charset language name (don't support
+	#                                              CHARDET_MOZ mode)
+	#                                confidence  : detecting confidence
+	#                                status      : error code (0 is not error)
+	#
 	$icu = chardet_detect ($fp, $s);
-	#
-	# If you give Python chardet option on buildtime,
-	# CHARDET_MOZ value set 1. If value of CHARDET_MOZ is 1,
-	# chardet extension don't support CHARDET_MOZ mode
-	#
 	if ( CHARDET_MOZ != -1 )
 		$moz = chardet_detect ($fp, $s, CHARDET_MOZ);
 
