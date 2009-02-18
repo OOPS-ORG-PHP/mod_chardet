@@ -15,7 +15,7 @@
    | Author: JoungKyun.Kim <http://oops.org>                              |
    +----------------------------------------------------------------------+
 
-   $Id: php_chardet.h,v 1.1.1.1 2009-02-18 15:02:28 oops Exp $
+   $Id: php_chardet.h,v 1.2 2009-02-18 16:03:30 oops Exp $
  */
 
 #ifndef PHP_CHARDET_H
@@ -114,6 +114,10 @@ short chardet_obj_init (CharDetObj **);
 void chardet_obj_free (CharDetObj **);
 short icu_chardet (CharDetFP *, const char *, CharDetObj **);
 short moz_chardet (CharDetFP *, const char *, CharDetObj **);
+
+#ifndef SAFE_EFREE
+#define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
+#endif
 
 #endif	/* PHP_CHARDET_H */
 
