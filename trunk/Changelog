@@ -1,6 +1,6 @@
 PHP Charset Detect Extension Changelog
 
-$Id: Changelog,v 1.2 2009-02-18 15:45:27 oops Exp $
+$Id: Changelog,v 1.3 2009-02-18 16:03:30 oops Exp $
 
 * 0.0.1
 --------------------------------------------------------------------------------
@@ -9,6 +9,7 @@ Thu Feb 20 2009
 by JoungKyun Kim <http://oops.org>
 	- changed Py_Initialize to Py_InitializeEx
 	- fix problem that confidencial set 0 if confidencial is int, on moz_chardet
+	- changed efree to SAFE_EFREE macro
 
 Wed Feb 19 2009
 by JoungKyun Kim <http://oops.org>

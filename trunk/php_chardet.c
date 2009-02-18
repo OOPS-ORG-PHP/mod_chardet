@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.2 2009-02-18 15:44:12 oops Exp $
+  $Id: php_chardet.c,v 1.3 2009-02-18 16:03:30 oops Exp $
 */
 
 /*
@@ -106,8 +106,7 @@ static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
 	fp->pMainDictionary = NULL;
 #endif
 
-	if ( fp != NULL )
-		efree (fp);
+	SAFE_EFREE(fp);
 }
 /* }}} */
 
@@ -192,7 +191,7 @@ PHP_FUNCTION(chardet_moz_version)
  */
 PHP_FUNCTION(chardet_open)
 {
-	CharDetFP * fp;
+	CharDetFP * fp = NULL;
 	UErrorCode status = U_ZERO_ERROR;
 
 	if ( (fp = (CharDetFP *) emalloc (sizeof (CharDetFP))) == NULL )
@@ -348,17 +347,9 @@ short chardet_obj_init (CharDetObj ** obj) {
 
 void chardet_obj_free (CharDetObj ** obj) {
 	if ( *obj != NULL ) {
-		if ( (*obj)->encoding != NULL ) {
-			efree ((*obj)->encoding);
-			(*obj)->encoding = NULL;
-		}
-		if ( (*obj)->lang != NULL ) {
-			efree ((*obj)->lang);
-			(*obj)->lang = NULL;
-		}
-
-		efree (*obj);
-		*obj = NULL;
+		SAFE_EFREE((*obj)->encoding)
+		SAFE_EFREE((*obj)->lang)
+		SAFE_EFREE(*obj)
 	}
 }
 
@@ -390,7 +381,7 @@ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
-	char * pybuf;
+	char * pybuf = NULL;
 	int pos = 0;
 
 	if ( buf == NULL ) {
@@ -410,10 +401,10 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	sprintf (pybuf, "detector.feed(\"%s\")", buf);
 	if ( PyRun_SimpleString (pybuf) == -1 ) {
 		(*obj)->status = MOZ_DETECT_FAILURE;
-		efree (pybuf);
+		SAFE_EFREE(pybuf);
 		return -1;
 	}
-	efree (pybuf);
+	SAFE_EFREE(pybuf);
 
 	PyRun_SimpleString ("detector.close()");
 	if ( PyRun_SimpleString ("__retval__ = detector.result") == -1 ) {
