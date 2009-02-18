@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.2 2009-02-18 16:06:55 oops Exp $
+dnl $Id: config.m4,v 1.3 2009-02-18 17:12:33 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -103,8 +103,8 @@ if test "$PHP_CHARDET" != "no"; then
 		do
 			if test -f $PYPREFIX/$i/lib$PYLIBNAME.$SHLIB_SUFFIX_NAME -o -f $PYPREFIX/$i/lib$PYLIBNAME.a ; then
 				PYLIBDIR=$PYPREFIX/$i
+				break
 			fi
-			break
 		done
 
 		if test -n "$PYLIBDIR"; then
