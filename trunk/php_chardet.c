@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.1.1.1 2009-02-18 15:02:28 oops Exp $
+  $Id: php_chardet.c,v 1.2 2009-02-18 15:44:12 oops Exp $
 */
 
 /*
@@ -120,7 +120,7 @@ PHP_MINIT_FUNCTION(chardet)
 	REGISTER_LONG_CONSTANT ("CHARDET_MOZ", CHARDET_MOZ, CONST_PERSISTENT | CONST_CS);
 
 #ifdef HAVE_MOZ_CHARDET
-	Py_Initialize ();
+	Py_InitializeEx (0);
 #endif
 
 	return SUCCESS;
@@ -435,7 +435,10 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 				(*obj)->encoding = estrdup (PyString_AS_STRING (value));
 				break;
 			default :
-				(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
+				if ( PyInt_Check (value) )
+					(*obj)->confidence = PyInt_AS_LONG (value) * 100;
+				else
+					(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
 		}
 
 		Py_DECREF (key);
