@@ -1,0 +1,47 @@
+mod_chardet php extension
+
+작성: 김정균 <http://oops.org>
+$Id: README,v 1.1.1.1 2009-02-18 15:02:28 oops Exp $
+
+* 개요
+
+mod_chardet 확장은 문자열의 charset 을 탐지하는 기능을 제공한다. 이 모듈은
+IBM 이 주도하는 ICU-project 의 ICU library 의 Conversion 기능에 들어있는
+Charset Detection (http://icu-project.org/userguide/charsetDetection.html)을
+기반으로 하고 있으며, Pyhton C API 를 이용하여 Mozilla Universial Charse
+Detection 을 기반으로 작성된 python-chardet (http://chardet.feedparser.org/)
+도 옵션으로 제공을 한다.
+
+* 요구 조건
+  1. libicu library
+     RHEL/CentOS 에서는 yum install libicu-devel 명령으로 간단히 설치가
+     가능하다.
+
+  2. python-chardet
+     get python-chardet from http://chardet.feedparser.org/download/
+
+     shell> tar xvfpz chardet-1.0.1.tgz
+     shell> cd chardet-1.0.1
+     shell> python ./setup.py build
+     shell> python ./setup.py install
+
+     python chardet 의 경우 config.m4 에서 강제로
+
+     PHP_MOZ_CHARDET="no"
+
+     설정을 하여 막아 놓았다. Python과 Python C API에 익숙하지 못환 관계로
+     shell 에서 사용할 경우에는 어느정도 사용하는데 지장이 없으나, 웹에서는
+     segfault 가 발생하는 문제를 해결하지 못한 관계로, 일단은 막아 놓은
+     상태이다. 관심이 있다면, config.m4 에서 위의 라인을 삭제한 후에
+     다시 빌드해 보기 바란다.
+
+* 설치
+
+shell> phpize
+shell> ./configure
+shell> make
+shell> cp -af modules/chardet.so $PHP_SHARED_EXTENSION_DIR/chardet.so
+
+* 예제
+
+이 파일과 함께 있는 test.php 를 참조한다.
