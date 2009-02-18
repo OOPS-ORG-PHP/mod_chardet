@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.4 2009-02-18 17:03:03 oops Exp $
+  $Id: php_chardet.c,v 1.5 2009-02-18 18:01:51 oops Exp $
 */
 
 /*
@@ -401,6 +401,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 		if ( pytmp[pos] == '\'' || pytmp[pos] == '"' || pytmp[pos] == '\r' || pytmp[pos] == '\n' )
 			pytmp[pos] = ' ';
 	}
+	pos = 0;
 
 	pybuf = (char *) emalloc (sizeof (char) * (20 + buflen + 1));
 
