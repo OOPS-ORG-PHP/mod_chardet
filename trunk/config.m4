@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.1.1.1 2009-02-18 15:02:28 oops Exp $
+dnl $Id: config.m4,v 1.2 2009-02-18 16:06:55 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -61,7 +61,7 @@ if test "$PHP_CHARDET" != "no"; then
 
 	dnl
 	dnl Maybe It has several problems. So, prevent building current:
-	PHP_MOZ_CHARDET="no"
+	dnl PHP_MOZ_CHARDET="no"
 	dnl
 	if test "$PHP_MOZ_CHARDET" != "no"; then
 		dnl Check Python version
