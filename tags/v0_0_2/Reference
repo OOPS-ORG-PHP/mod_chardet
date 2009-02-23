@@ -1,0 +1,81 @@
+$Id: Reference,v 1.1 2009-02-23 15:32:07 oops Exp $
+
+Reference of mod_chardet
+------------------------
+
+2009/02/24 JoungKyun.Kim <http://oops.org>
+
+* chardet_version
+
+  proto type   : chardet_version (void)
+  return value : string
+                 return mod_chardet version
+
+
+* chardet_moz_version
+
+  proto type   : chardet_moz_version (void)
+  return value : string
+                 return libchardet library version
+  warning      : if CHARDET_MOZ == -1, don't support
+
+
+* chardet_icu_version
+
+  proto type   : chardet_icu_version (void)
+  return value : string
+                 return icu library version
+  warning      : if CHARDET_ICU == -1, don't support
+
+
+* chardet_py_version
+
+  proto type   : chardet_py_version (void)
+  return value : string
+                 return python-chardet version
+  warning      : if CHARDET_PY == -1, don't support
+
+
+* chardet_open
+
+  proto type   : chardet_open (void)
+  return value : resource
+                 return chardet stream handle
+
+
+* chardet_detect
+
+  proto type   : chardet_detect (stream, string[, mode])
+
+                 stream -> return value of chardet_open function
+                 string -> strings for character set detecting
+                 mode   -> optional
+                           if support CHARDTE_MOZ, this value is
+                           default, and don't support CHARDET_MOZ,
+                           CHARDET_ICU is default.
+
+                           CHARDET_MOZ : libchardet library result
+                           CHARDET_ICU : icu library result
+                           CHARDET_PY  : python-chardet result
+
+                           if each CHARDET_(MOZ|ICU|PY) value is -1,
+                           it means don't support each mode.
+
+  return value : object
+
+                 encoding   -> detecting charset name
+                 langs      -> charset language name
+                               Don't support on CHARDET_MOZ and CAHRDET_PY mode
+                 confidence -> detecting confidence
+                 status     -> error code (0 is not error)
+
+
+* chardet_open
+
+  proto type   : chardet_close (stream)
+
+                 stream -> return value of chardet_open function
+
+  return value : void
+
+
