@@ -1,6 +1,6 @@
 PHP Charset Detect Extension Changelog
 
-$Id: Changelog,v 1.6 2009-02-23 03:52:04 oops Exp $
+$Id: Changelog,v 1.7 2009-02-23 14:49:20 oops Exp $
 
 * 0.0.2
 --------------------------------------------------------------------------------
@@ -8,6 +8,7 @@ $Id: Changelog,v 1.6 2009-02-23 03:52:04 oops Exp $
 Thu Feb 23 2009
 by JoungKyun Kim <http://oops.org>
 	- changed moz to py
+	- add mozilla universal charset detect mode with c library
 
 * 0.0.1
 --------------------------------------------------------------------------------
