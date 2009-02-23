@@ -15,23 +15,24 @@ $fp = chardet_open ();
 $i=0;
 foreach ( $strings as $s ) {
 	#
-	# proto object chardet_detect (database handle, string[, mode])
+	# proto object chardet_detect (stream handle, string[, mode])
 	#   database handle : return value of chardet_open () API
 	#   string          : strings for character set detecting
-	#   mode            : chardet library mode (CHARDET_ICU or CHARDET_MZO)
-	#                     default value is CHARDET_ICU
+	#   mode            : optional
+	#                     if support CHARDTE_MOZ, this value is
+	#                     default, and don't support CHARDET_MOZ,
+	#                     CHARDET_ICU is default.
 	#
-	#                     CHARDET_ICU -> detect with ICU library (default mode)
-	#                     CHARDET_PY  -> detect with Mozilla Universal Chardet library
-	#                                    with Python C API (use python chardet)
+	#                     CHARDET_MOZ : libchardet library result
+	#                     CHARDET_ICU : icu library result
+	#                     CHARDET_PY  : python-chardet result
 	#
-	#                     If you give Python chardet option on buildtime, CHARDET_PY
-	#                     value is set 1. If value of CHARDET_PY is -2, chardet
-	#                     extension don't support CHARDET_PY mode
+	#                     if each CHARDET_(MOZ|ICU|PY) value is -1,
+	#                     it means don't support each mode.
 	#
-	#  return value type : object -> encoding    : detecting charset
-	#                                langs       : charset language name (don't support
-	#                                              CHARDET_PY mode)
+	#  return value type : object -> encoding    : detecting charset name
+	#                                langs       : charset language name
+	#                                              Don't support on CHARDET_MOZ and CAHRDET_PY mode
 	#                                confidence  : detecting confidence
 	#                                status      : error code (0 is not error)
 	#
