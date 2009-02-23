@@ -15,7 +15,7 @@
    | Author: JoungKyun.Kim <http://oops.org>                              |
    +----------------------------------------------------------------------+
 
-   $Id: php_chardet.h,v 1.3 2009-02-23 03:52:04 oops Exp $
+   $Id: php_chardet.h,v 1.4 2009-02-23 14:49:20 oops Exp $
  */
 
 #ifndef PHP_CHARDET_H
@@ -41,7 +41,12 @@ PHP_RSHUTDOWN_FUNCTION(chardet);
 PHP_MINFO_FUNCTION(chardet);
 
 PHP_FUNCTION(chardet_version);
+#ifdef HAVE_MOZ_CHARDET
+PHP_FUNCTION(chardet_moz_version);
+#endif
+#ifdef HAVE_ICU_CHARDET
 PHP_FUNCTION(chardet_icu_version);
+#endif
 #ifdef HAVE_PY_CHARDET
 PHP_FUNCTION(chardet_py_version);
 #endif
@@ -78,8 +83,14 @@ PHP_FUNCTION(chardet_close);
 #define phpext_chardet_ptr chardet_module_ptr
 
 typedef struct CharDet_FP {
+#ifdef HAVE_MOZ_CHARDET
+	Detect *moz;
+	short moz_status;
+#endif
+#ifdef HAVE_ICU_CHARDET
 	UCharsetDetector * csd;
 	short csd_status;
+#endif
 #ifdef HAVE_PY_CHARDET
 	PyObject * pMainDictionary;
 	PyObject * pMainModule;
@@ -93,17 +104,27 @@ typedef struct CharDet_Obj {
 	UErrorCode status;
 } CharDetObj;
 
-#define CHARDET_ICU 0
-#define CHARDET_MOZ 1
+#ifdef HAVE_MOZ_CHARDET
+#define CHARDET_MOZ 0
+#else
+#define CHARDET_MOZ -1
+#endif
+
+#ifdef HAVE_ICU_CHARDET
+#define CHARDET_ICU 1
+#else
+#define CHARDET_ICU -1
+#endif
+
 #ifdef HAVE_PY_CHARDET
 #define CHARDET_PY 2
 #else
-#define CHARDET_PY -2
+#define CHARDET_PY -1
 #endif
 
 #ifdef HAVE_PY_CHARDET
 #define PY_BUFNULL			1	// Checking String is NULL
-#define PY_MOD_MAINLOAD	2	// Failed load __main__ module
+#define PY_MOD_MAINLOAD		2	// Failed load __main__ module
 #define PY_MOD_CHARDETLOAD	3	// Failed load chardet module
 #define PY_MEMLOC			4	// memory allocation failed
 #define PY_DETECT_FAILURE	5	// failed detect string encoding
@@ -113,8 +134,15 @@ typedef struct CharDet_Obj {
 void chardet_fp_free (CharDetFP **);
 short chardet_obj_init (CharDetObj **);
 void chardet_obj_free (CharDetObj **);
+#ifdef HAVE_MOZ_CHARDET
+short moz_chardet (CharDetFP *, const char *, CharDetObj **);
+#endif
+#ifdef HAVE_ICU_CHARDET
 short icu_chardet (CharDetFP *, const char *, CharDetObj **);
+#endif
+#ifdef HAVE_PY_CHARDET
 short py_chardet (CharDetFP *, const char *, CharDetObj **);
+#endif
 
 #ifndef SAFE_EFREE
 #define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }

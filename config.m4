@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.4 2009-02-23 03:52:04 oops Exp $
+dnl $Id: config.m4,v 1.5 2009-02-23 14:49:20 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -7,49 +7,104 @@ dnl without editing.
 
 dnl If your extension references something external, use with:
 
-PHP_ARG_WITH(chardet, for ICU charset detect support,
+PHP_ARG_WITH(chardet, for charset detect support,
 [  --with-chardet          Include charset detect support])
 
-PHP_ARG_ENABLE(py-chardet, for Python chardet support,
-[  --enable-py-chardet    Support python chardet])
-
 if test "$PHP_CHARDET" != "no"; then
-	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
-	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.1", [Chardet extension version])
+	PHP_ARG_ENABLE(moz-chardet, for Mozilla chardet support,
+	[  --enable-moz-chardet    Support Mozilla chardet [[default=yes]]], [no])
 
-	CHARDET_PARAMETER="$CPPLAGS"
+	PHP_ARG_ENABLE(icu-chardet, for ICU chardet support,
+	[  --enable-icu-chardet    Support ICU chardet [[default=yes]]], [no])
+
+	PHP_ARG_ENABLE(py-chardet, for Python chardet support,
+	[  --enable-py-chardet     Support python chardet [[default=no]]], [no], [no])
+
+	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
+	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.2", [Chardet extension version])
+
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
 
-	AC_MSG_CHECKING(the icu-config path)
-	ICUCONFIG=
-	if test -f "$PHP_CHARDET"; then
-		ICUCONFIG=$PHP_CHARDET
-	else
-		for i in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \
-				/opt/bin /opt/sbin /usr/local/icu/bin /usr/local/icu/sbin \
-				/usr/local/bin/icu/bin /usr/local/bin/icu/sbin
-		do
-			if test -f "$i/icu-config"; then
-				ICUCONFIG="$i/icu-config"
-				break
+	if test "$PHP_MOZ_CHARDET" = "no" -a "$PHP_ICU_CHARDET" = "no"; then
+		AC_MSG_ERROR([mod_chardet is needed --enable-moz-chardet or --enable-icu-chardet.])
+	fi
+
+	if test "$PHP_MOZ_CHARDET" != "no"; then
+		AC_MSG_CHECKING(the chardet-config path)
+		MOZCONFIG=
+		if test -f "$PHP_MOZ_CHARDET"; then
+			MOZCONFIG=$PHP_MOZ_CHARDET
+		else
+			for i in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \
+					/opt/bin /opt/sbin /opt/chardet/bin /opt/chardet/sbin \
+					/opt/libchardet/bin /opt/libchardet/sbin \
+					/usr/local/libchardet/bin /usr/local/libchardet/sbin \
+					/usr/local/chardet/bin /usr/local/chardet/sbin \
+					/usr/local/bin/libchardet/bin /usr/local/bin/libchardet/sbin \
+					/usr/local/bin/chardet/bin /usr/local/bin/chardet/sbin
+			do
+				if test -f "$i/chardet-config"; then
+					MOZCONFIG="$i/chardet-config"
+					break
+				fi
+			done
+		fi
+
+		if test -n "$MOZCONFIG" ; then
+			AC_MSG_RESULT([$MOZCONFIG])
+
+			MOZ_VERSION=$($MOZCONFIG --version)
+			MOZ_LIBS=$($MOZCONFIG --libs)
+			MOZ_LIBDIR=
+			CPPFLAGS="$CPPFLAGS $($MOZCONFIG --defs)"
+
+			AC_MSG_CHECKING(MOZ version)
+			AC_MSG_RESULT([$MOZ_VERSION])
+			AC_DEFINE(HAVE_MOZ_CHARDET,1,[Mozilla Chardet support])
+		else
+			AC_MSG_NOTICE([Can't find. specify --enable-moz-chardet=/path/chardet-config])
+		fi
+	fi
+
+	if test "$PHP_ICU_CHARDET" != "no"; then
+		AC_MSG_CHECKING(the icu-config path)
+		ICUCONFIG=
+		if test -f "$PHP_ICU_CHARDET"; then
+			ICUCONFIG=$PHP_ICU_CHARDET
+		else
+			for i in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \
+					/opt/bin /opt/sbin /opt/icu/bin /opt/icu/sbin \
+					/usr/local/icu/bin /usr/local/icu/sbin \
+					/usr/local/bin/icu/bin /usr/local/bin/icu/sbin
+			do
+				if test -f "$i/icu-config"; then
+					ICUCONFIG="$i/icu-config"
+					break
+				fi
+			done
+		fi
+
+		if test -n "$ICUCONFIG" ; then
+			AC_MSG_RESULT([$ICUCONFIG])
+
+			ICU_VERSION=$($ICUCONFIG --version)
+			ICU_LIBS=$($ICUCONFIG --ldflags)
+			ICU_LIBDIR=$($ICUCONFIG --ldflags-searchpath)
+			CPPFLAGS="$CPPFLAGS $($ICUCONFIG --cppflags)"
+
+			AC_MSG_CHECKING(ICU version)
+			AC_MSG_RESULT([$ICU_VERSION])
+			AC_DEFINE(HAVE_ICU_CHARDET,1,[ICU Chardet support])
+		else
+			if [ -z "$MOZ_VERSION" ]; then
+				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
+				AC_MSG_ERROR([mod_chardet is needed libicu or libchardet.])
+			else
+				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
 			fi
-		done
+		fi
 	fi
-
-	if test -n "$ICUCONFIG" ; then
-		AC_MSG_RESULT([$ICUCONFIG])
-	else
-		AC_MSG_ERROR([can't find. specify --with-chardet=/path/icu-config])
-	fi
-
-	ICU_VERSION=$($ICUCONFIG --version)
-	ICU_LIBS=$($ICUCONFIG --ldflags)
-	ICU_LIBDIR=$($ICUCONFIG --ldflags-searchpath)
-	CPPFLAGS="$CPPFLAGS $($ICUCONFIG --cppflags)"
-
-	AC_MSG_CHECKING(ICU version)
-	AC_MSG_RESULT([$ICU_VERSION])
 
 	dnl Checks for header files
 	dnl AC_HEADER_STDC
@@ -126,7 +181,7 @@ if test "$PHP_CHARDET" != "no"; then
 		fi
 	fi
 
-	CHARDET_SHARED_LIBADD="$ICU_LIBDIR $ICU_LIBS $PY_SHARED_LIBRARY"
+	CHARDET_SHARED_LIBADD="$MOZ_LIBS $ICU_LIBDIR $ICU_LIBS $PY_SHARED_LIBRARY"
 	PHP_SUBST(CHARDET_SHARED_LIBADD)
 	PHP_NEW_EXTENSION(chardet, php_chardet.c, $ext_shared)
 fi
