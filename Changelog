@@ -1,6 +1,13 @@
 PHP Charset Detect Extension Changelog
 
-$Id: Changelog,v 1.5 2009-02-18 17:03:03 oops Exp $
+$Id: Changelog,v 1.6 2009-02-23 03:52:04 oops Exp $
+
+* 0.0.2
+--------------------------------------------------------------------------------
+
+Thu Feb 23 2009
+by JoungKyun Kim <http://oops.org>
+	- changed moz to py
 
 * 0.0.1
 --------------------------------------------------------------------------------

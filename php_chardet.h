@@ -15,7 +15,7 @@
    | Author: JoungKyun.Kim <http://oops.org>                              |
    +----------------------------------------------------------------------+
 
-   $Id: php_chardet.h,v 1.2 2009-02-18 16:03:30 oops Exp $
+   $Id: php_chardet.h,v 1.3 2009-02-23 03:52:04 oops Exp $
  */
 
 #ifndef PHP_CHARDET_H
@@ -42,8 +42,8 @@ PHP_MINFO_FUNCTION(chardet);
 
 PHP_FUNCTION(chardet_version);
 PHP_FUNCTION(chardet_icu_version);
-#ifdef HAVE_MOZ_CHARDET
-PHP_FUNCTION(chardet_moz_version);
+#ifdef HAVE_PY_CHARDET
+PHP_FUNCTION(chardet_py_version);
 #endif
 PHP_FUNCTION(chardet_open);
 PHP_FUNCTION(chardet_detect);
@@ -80,7 +80,7 @@ PHP_FUNCTION(chardet_close);
 typedef struct CharDet_FP {
 	UCharsetDetector * csd;
 	short csd_status;
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 	PyObject * pMainDictionary;
 	PyObject * pMainModule;
 #endif
@@ -94,26 +94,27 @@ typedef struct CharDet_Obj {
 } CharDetObj;
 
 #define CHARDET_ICU 0
-#ifdef HAVE_MOZ_CHARDET
 #define CHARDET_MOZ 1
+#ifdef HAVE_PY_CHARDET
+#define CHARDET_PY 2
 #else
-#define CHARDET_MOZ -1
+#define CHARDET_PY -2
 #endif
 
-#ifdef HAVE_MOZ_CHARDET
-#define MOZ_BUFNULL			1	// Checking String is NULL
-#define MOZ_MOD_MAINLOAD	2	// Failed load __main__ module
-#define MOZ_MOD_CHARDETLOAD	3	// Failed load chardet module
-#define MOZ_MEMLOC			4	// memory allocation failed
-#define MOZ_DETECT_FAILURE	5	// failed detect string encoding
-#define MOZ_NO_RESULT		6	// can't find __retval__ key on dictionary
+#ifdef HAVE_PY_CHARDET
+#define PY_BUFNULL			1	// Checking String is NULL
+#define PY_MOD_MAINLOAD	2	// Failed load __main__ module
+#define PY_MOD_CHARDETLOAD	3	// Failed load chardet module
+#define PY_MEMLOC			4	// memory allocation failed
+#define PY_DETECT_FAILURE	5	// failed detect string encoding
+#define PY_NO_RESULT		6	// can't find __retval__ key on dictionary
 #endif
 
 void chardet_fp_free (CharDetFP **);
 short chardet_obj_init (CharDetObj **);
 void chardet_obj_free (CharDetObj **);
 short icu_chardet (CharDetFP *, const char *, CharDetObj **);
-short moz_chardet (CharDetFP *, const char *, CharDetObj **);
+short py_chardet (CharDetFP *, const char *, CharDetObj **);
 
 #ifndef SAFE_EFREE
 #define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
