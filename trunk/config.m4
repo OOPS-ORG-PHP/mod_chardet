@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.3 2009-02-18 17:12:33 oops Exp $
+dnl $Id: config.m4,v 1.4 2009-02-23 03:52:04 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -8,10 +8,10 @@ dnl without editing.
 dnl If your extension references something external, use with:
 
 PHP_ARG_WITH(chardet, for ICU charset detect support,
-[  --with-chardet          Include ICU charset detect support])
+[  --with-chardet          Include charset detect support])
 
-PHP_ARG_ENABLE(moz-chardet, for Mozilla chardet support,
-[  --enable-moz-chardet    Support mozilla chardet])
+PHP_ARG_ENABLE(py-chardet, for Python chardet support,
+[  --enable-py-chardet    Support python chardet])
 
 if test "$PHP_CHARDET" != "no"; then
 	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
@@ -56,17 +56,17 @@ if test "$PHP_CHARDET" != "no"; then
 	dnl AC_CHECK_HEADERS(unistd.h)
 
 	dnl
-	dnl Mozilla Chardet support
+	dnl Python Chardet support
 	dnl
 
 	dnl
 	dnl Maybe It has several problems. So, prevent building current:
-	dnl PHP_MOZ_CHARDET="no"
+	dnl PHP_PY_CHARDET="no"
 	dnl
-	if test "$PHP_MOZ_CHARDET" != "no"; then
+	if test "$PHP_PY_CHARDET" != "no"; then
 		dnl Check Python version
-		if test -f "$PHP_MOZ_CHARDET"; then
-			PYEXEC=$PHP_MOZ_CHARDET
+		if test -f "$PHP_PY_CHARDET"; then
+			PYEXEC=$PHP_PY_CHARDET
 		fi
 
 		if test -z "$PYEXEC"; then
@@ -114,15 +114,15 @@ if test "$PHP_CHARDET" != "no"; then
 			AC_MSG_CHECKING([for python chardet])
 			$PYEXEC -c "import chardet" >& /dev/null
 			if test $? = 0 ; then
-				MOZ_CHARDET_VERSION=`$PYEXEC -c "import chardet; print chardet.__version__" 2> /dev/null`
-				AC_MSG_RESULT([$MOZ_CHARDET_VERSION support])
-				AC_DEFINE(HAVE_MOZ_CHARDET,1,[Mozilla Chardet support])
-				AC_DEFINE_UNQUOTED(MOZ_CHARDET_VERSION,"$MOZ_CHARDET_VERSION", [Mozilla Chardec version])
+				PY_CHARDET_VERSION=`$PYEXEC -c "import chardet; print chardet.__version__" 2> /dev/null`
+				AC_MSG_RESULT([$PY_CHARDET_VERSION support])
+				AC_DEFINE(HAVE_PY_CHARDET,1,[Python Chardet support])
+				AC_DEFINE_UNQUOTED(PY_CHARDET_VERSION,"$PY_CHARDET_VERSION", [Python Chardec version])
 			else
-				AC_MSG_RESULT([no support. Can't support Mozilla Chardet])
+				AC_MSG_RESULT([no support. Can't support Python Chardet])
 			fi
 		else
-			AC_MSG_RESULT([not found. Can't support Mozilla Chardet])
+			AC_MSG_RESULT([not found. Can't support Python Chardet])
 		fi
 	fi
 

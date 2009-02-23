@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.5 2009-02-18 18:01:51 oops Exp $
+  $Id: php_chardet.c,v 1.6 2009-02-23 03:52:04 oops Exp $
 */
 
 /*
@@ -31,7 +31,7 @@
 
 #include <unicode/ucsdet.h>
 
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 #include <Python.h>
 #endif
 
@@ -56,8 +56,8 @@ static int le_chardet;
 function_entry chardet_functions[] = {
 	PHP_FE(chardet_version,			NULL)
 	PHP_FE(chardet_icu_version,		NULL)
-#ifdef HAVE_MOZ_CHARDET
-	PHP_FE(chardet_moz_version,		NULL)
+#ifdef HAVE_PY_CHARDET
+	PHP_FE(chardet_py_version,		NULL)
 #endif
 	PHP_FE(chardet_open,			NULL)
 	PHP_FE(chardet_detect,			NULL)
@@ -101,7 +101,7 @@ static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
 		fp->csd_status = 0;
 	}
 
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 	fp->pMainModule = NULL;
 	fp->pMainDictionary = NULL;
 #endif
@@ -117,8 +117,9 @@ PHP_MINIT_FUNCTION(chardet)
 	le_chardet = zend_register_list_destructors_ex (_close_chardet_link, NULL, "Chardet link", module_number);
 	REGISTER_LONG_CONSTANT ("CHARDET_ICU", CHARDET_ICU, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("CHARDET_MOZ", CHARDET_MOZ, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("CHARDET_PY", CHARDET_PY, CONST_PERSISTENT | CONST_CS);
 
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 	Py_InitializeEx (0);
 #endif
 
@@ -130,7 +131,7 @@ PHP_MINIT_FUNCTION(chardet)
  */
 PHP_MSHUTDOWN_FUNCTION(chardet)
 {
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 	Py_Finalize ();
 #endif
 
@@ -145,7 +146,7 @@ PHP_MINFO_FUNCTION(chardet)
 	php_info_print_table_start();
 	php_info_print_table_colspan_header(2, "Character Set Detect extension support");
 	php_info_print_table_row(2, "Summary",
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 								"Charset detect with ICU/Mozilla library"
 #else
 								"Charset detect with ICU library"
@@ -154,8 +155,8 @@ PHP_MINFO_FUNCTION(chardet)
 	php_info_print_table_row(2, "URL", "http://devel.oops.org/");
 	php_info_print_table_row(2, "Build version", CHARDET_VERSION);
 	php_info_print_table_row(2, "ICU Library version", U_ICU_VERSION);
-#ifdef HAVE_MOZ_CHARDET
-	php_info_print_table_row(2, "Python Chardet Support", MOZ_CHARDET_VERSION);
+#ifdef HAVE_PY_CHARDET
+	php_info_print_table_row(2, "Python Chardet Support", PY_CHARDET_VERSION);
 #endif
 	php_info_print_table_end();
 }
@@ -177,12 +178,12 @@ PHP_FUNCTION(chardet_icu_version)
 }
 /* }}} */
 
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 /* {{{ proto char chardet_icu_buildver (void)
  *  print chardet icu library version */
-PHP_FUNCTION(chardet_moz_version)
+PHP_FUNCTION(chardet_py_version)
 {
-	RETURN_STRING (MOZ_CHARDET_VERSION, 1);
+	RETURN_STRING (PY_CHARDET_VERSION, 1);
 }
 /* }}} */
 #endif
@@ -204,7 +205,7 @@ PHP_FUNCTION(chardet_open)
 
 	fp->csd_status = 1;
 
-#ifdef HAVE_MOZ_CHARDET
+#ifdef HAVE_PY_CHARDET
 	if ( (fp->pMainModule = PyImport_AddModule ("__main__")) == NULL ) {
 		chardet_fp_free (&fp);
 		RETURN_FALSE;
@@ -250,7 +251,7 @@ PHP_FUNCTION(chardet_close)
 /* {{{ proto char chardet (resource, string, type)
  *  resouce : stream
  *  string : string that checked encoding
- *  type   : CHARDET_ICU or CHARDET_MOZ
+ *  type   : CHARDET_ICU or CHARDET_MOZ or CHARDET_PY
  *  return object result
  *     -> encoding
  *     -> lang
@@ -296,18 +297,18 @@ PHP_FUNCTION(chardet_detect)
 		case CHARDET_ICU :
 			r = icu_chardet (fp, string , &obj);
 			break;
-#ifdef HAVE_MOZ_CHARDET
-		case CHARDET_MOZ :
-			r = moz_chardet (fp, string, &obj);
+#ifdef HAVE_PY_CHARDET
+		case CHARDET_PY :
+			r = py_chardet (fp, string, &obj);
 			break;
 #endif
 		default :
 			chardet_obj_free (&obj);
-#ifdef HAVE_MOZ_CHARDET
-			php_error (E_ERROR, "Unknown TYPE argument 3 on chardet (). Use CHARDET_ICU or CHARDET_MOZ");
+#ifdef HAVE_PY_CHARDET
+			php_error (E_ERROR, "Unknown TYPE argument 3 on chardet (). Use CHARDET_ICU or CHARDET_PY");
 #else
-			if ( mode == CHARDET_MOZ )
-				php_error (E_ERROR, "Don't support CHARDET_MOZ type in this compile time.");
+			if ( mode == CHARDET_PY )
+				php_error (E_ERROR, "Don't support CHARDET_PY type in this compile time.");
 			else
 				php_error (E_ERROR, "Unknown TYPE argument 3 on chardet (). Use CHARDET_ICU");
 #endif
@@ -377,8 +378,8 @@ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	return 0;
 }
 
-#ifdef HAVE_MOZ_CHARDET
-short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
+#ifdef HAVE_PY_CHARDET
+short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
 	char * pytmp = NULL;
@@ -387,7 +388,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	int pos = 0;
 
 	if ( buf == NULL ) {
-		(*obj)->status = MOZ_BUFNULL;
+		(*obj)->status = PY_BUFNULL;
 		return -1;
 	}
 
@@ -406,7 +407,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	pybuf = (char *) emalloc (sizeof (char) * (20 + buflen + 1));
 
 	if ( pybuf == NULL ) {
-		(*obj)->status = MOZ_MEMLOC;
+		(*obj)->status = PY_MEMLOC;
 		return -1;
 	}
 
@@ -414,7 +415,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	sprintf (pybuf, "detector.feed(\"%s\")", pytmp);
 	if ( PyRun_SimpleString (pybuf) == -1 ) {
-		(*obj)->status = MOZ_DETECT_FAILURE;
+		(*obj)->status = PY_DETECT_FAILURE;
 		SAFE_EFREE(pybuf);
 		return -1;
 	}
@@ -422,7 +423,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	PyRun_SimpleString ("detector.close()");
 	if ( PyRun_SimpleString ("__retval__ = detector.result") == -1 ) {
-		(*obj)->status = MOZ_DETECT_FAILURE;
+		(*obj)->status = PY_DETECT_FAILURE;
 		return -1;
 	}
 
@@ -430,7 +431,7 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	Py_XINCREF (pResult);
 
 	if ( pResult == NULL ) {
-		(*obj)->status = MOZ_NO_RESULT;
+		(*obj)->status = PY_NO_RESULT;
 		return -1;
 	}
 
