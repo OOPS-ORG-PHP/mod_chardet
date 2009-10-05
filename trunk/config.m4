@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.6 2009-10-05 10:07:07 oops Exp $
+dnl $Id: config.m4,v 1.7 2009-10-05 12:31:17 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -21,7 +21,7 @@ if test "$PHP_CHARDET" != "no"; then
 	[  --enable-py-chardet     Support python chardet [[default=no]]], [no], [no])
 
 	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
-	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.2", [Chardet extension version])
+	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.3", [Chardet extension version])
 
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
