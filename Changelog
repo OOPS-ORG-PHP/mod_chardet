@@ -1,8 +1,8 @@
 PHP Charset Detect Extension Changelog
 
-$Id: Changelog,v 1.9 2009-10-05 11:58:26 oops Exp $
+$Id: Changelog,v 1.10 2009-10-05 12:31:16 oops Exp $
 
-* 0.0.2
+* 0.0.3
 --------------------------------------------------------------------------------
 
 Mon Oct  5 2009
@@ -10,10 +10,15 @@ by JoungKyun Kim <http://oops.org>
 	- fixed config.m4 shell test syntax
 	- fixed compile error when undefined HAVE_ICU_CHARDET
 
+
+* 0.0.2
+--------------------------------------------------------------------------------
+
 Thu Feb 23 2009
 by JoungKyun Kim <http://oops.org>
 	- changed moz to py
 	- add mozilla universal charset detect mode with c library
+
 
 * 0.0.1
 --------------------------------------------------------------------------------
