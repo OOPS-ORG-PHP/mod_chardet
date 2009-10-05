@@ -1,6 +1,6 @@
 PHP Charset Detect Extension Changelog
 
-$Id: Changelog,v 1.8 2009-10-05 10:07:07 oops Exp $
+$Id: Changelog,v 1.9 2009-10-05 11:58:26 oops Exp $
 
 * 0.0.2
 --------------------------------------------------------------------------------
@@ -8,6 +8,7 @@ $Id: Changelog,v 1.8 2009-10-05 10:07:07 oops Exp $
 Mon Oct  5 2009
 by JoungKyun Kim <http://oops.org>
 	- fixed config.m4 shell test syntax
+	- fixed compile error when undefined HAVE_ICU_CHARDET
 
 Thu Feb 23 2009
 by JoungKyun Kim <http://oops.org>

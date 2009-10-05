@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.7 2009-02-23 14:49:20 oops Exp $
+  $Id: php_chardet.c,v 1.8 2009-10-05 11:58:26 oops Exp $
 */
 
 /*
@@ -356,7 +356,7 @@ PHP_FUNCTION(chardet_detect)
 	}
 
 	switch (type) {
-		case CHARDET_MOZ :
+		case CASE_CHARDET_MOZ :
 #ifdef HAVE_MOZ_CHARDET
 			r = moz_chardet (fp, string , &obj);
 #else
@@ -364,7 +364,7 @@ PHP_FUNCTION(chardet_detect)
 			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-mod-chardet option");
 #endif
 			break;
-		case CHARDET_ICU :
+		case CASE_CHARDET_ICU :
 #ifdef HAVE_ICU_CHARDET
 			r = icu_chardet (fp, string , &obj);
 #else
@@ -372,7 +372,7 @@ PHP_FUNCTION(chardet_detect)
 			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-icu-chardet option");
 #endif
 			break;
-		case CHARDET_PY :
+		case CASE_CHARDET_PY :
 #ifdef HAVE_PY_CHARDET
 			r = py_chardet (fp, string, &obj);
 #else
@@ -390,7 +390,7 @@ PHP_FUNCTION(chardet_detect)
 	add_property_string (return_value, "encoding", obj->encoding ? obj->encoding : "", 1);
 	add_property_long (return_value, "confidence", obj->confidence);
 	add_property_long (return_value, "status", obj->status);
-	if ( type == CHARDET_ICU )
+	if ( type == CASE_CHARDET_ICU )
 		add_property_string (return_value, "lang", obj->lang ? obj->lang : "", 1);
 
 	chardet_obj_free (&obj);

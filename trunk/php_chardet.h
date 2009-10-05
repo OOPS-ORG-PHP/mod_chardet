@@ -15,7 +15,7 @@
    | Author: JoungKyun.Kim <http://oops.org>                              |
    +----------------------------------------------------------------------+
 
-   $Id: php_chardet.h,v 1.4 2009-02-23 14:49:20 oops Exp $
+   $Id: php_chardet.h,v 1.5 2009-10-05 11:58:26 oops Exp $
  */
 
 #ifndef PHP_CHARDET_H
@@ -97,6 +97,10 @@ typedef struct CharDet_FP {
 #endif
 } CharDetFP;
 
+#ifndef HAVE_ICU_CHARDET
+#define UErrorCode short
+#endif
+
 typedef struct CharDet_Obj {
 	char * encoding;
 	char * lang;
@@ -109,18 +113,21 @@ typedef struct CharDet_Obj {
 #else
 #define CHARDET_MOZ -1
 #endif
+#define CASE_CHATDET_MOZ 0
 
 #ifdef HAVE_ICU_CHARDET
 #define CHARDET_ICU 1
 #else
 #define CHARDET_ICU -1
 #endif
+#define CASE_CHATDET_ICU 1
 
 #ifdef HAVE_PY_CHARDET
 #define CHARDET_PY 2
 #else
 #define CHARDET_PY -1
 #endif
+#define CASE_CHATDET_PY 2
 
 #ifdef HAVE_PY_CHARDET
 #define PY_BUFNULL			1	// Checking String is NULL
