@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id: php_chardet.c,v 1.8 2009-10-05 11:58:26 oops Exp $
+  $Id: php_chardet.c,v 1.9 2009-10-05 12:28:24 oops Exp $
 */
 
 /*
@@ -24,6 +24,15 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+
+// avoid conflict redefine
+#ifdef PACKAGE_NAME
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_VERSION
+#undef PACKAGE_TARNAME
+#undef PACKAGE_BUGREPORT
+#endif
 #endif
 
 #include <stdio.h>
@@ -31,6 +40,15 @@
 
 #ifdef HAVE_MOZ_CHARDET
 #include <chardet.h>
+
+// avoid conflict redefine
+#ifdef PACKAGE_NAME
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_VERSION
+#undef PACKAGE_TARNAME
+#undef PACKAGE_BUGREPORT
+#endif
 #endif
 
 #ifdef HAVE_ICU_CHARDET
