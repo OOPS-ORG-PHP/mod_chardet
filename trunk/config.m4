@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.5 2009-02-23 14:49:20 oops Exp $
+dnl $Id: config.m4,v 1.6 2009-10-05 10:07:07 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -97,7 +97,7 @@ if test "$PHP_CHARDET" != "no"; then
 			AC_MSG_RESULT([$ICU_VERSION])
 			AC_DEFINE(HAVE_ICU_CHARDET,1,[ICU Chardet support])
 		else
-			if [ -z "$MOZ_VERSION" ]; then
+			if test -z "$MOZ_VERSION" ; then
 				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
 				AC_MSG_ERROR([mod_chardet is needed libicu or libchardet.])
 			else
