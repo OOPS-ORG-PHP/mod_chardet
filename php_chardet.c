@@ -77,7 +77,7 @@ static int le_chardet;
  *
  * Every user visible function must have an entry in chardet_functions[].
  */
-function_entry chardet_functions[] = {
+const zend_function_entry chardet_functions[] = {
 	PHP_FE(chardet_version,			NULL)
 #ifdef HAVE_MOZ_CHARDET
 	PHP_FE(chardet_moz_version,		NULL)
