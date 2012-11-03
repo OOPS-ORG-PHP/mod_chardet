@@ -8,6 +8,7 @@ $Id$
 Sun Nov  3 2012
 by JoungKyun.Kim <http://oops.org>
 	- fixed deprecated zend_get_parameters_ex
+	- support OOP method and exception
 
 Fri Nov  1 2012
 by JoungKyun.Kim <http://oops.org>
