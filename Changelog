@@ -1,18 +1,6 @@
 PHP Charset Detect Extension Changelog
 
-$Id$
-
-* 0.0.4
---------------------------------------------------------------------------------
-
-Sun Nov  3 2012
-by JoungKyun.Kim <http://oops.org>
-	- fixed deprecated zend_get_parameters_ex
-
-Fri Nov  1 2012
-by JoungKyun.Kim <http://oops.org>
-	- support PHP 5.4
-
+$Id: Changelog,v 1.10 2009-10-05 12:31:16 oops Exp $
 
 * 0.0.3
 --------------------------------------------------------------------------------

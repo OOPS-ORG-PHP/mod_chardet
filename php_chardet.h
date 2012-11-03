@@ -15,7 +15,7 @@
    | Author: JoungKyun.Kim <http://oops.org>                              |
    +----------------------------------------------------------------------+
 
-   $Id$
+   $Id: php_chardet.h,v 1.6 2009-10-05 12:06:19 oops Exp $
  */
 
 #ifndef PHP_CHARDET_H
