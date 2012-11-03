@@ -73,6 +73,16 @@ ZEND_DECLARE_MODULE_GLOBALS(chardet)
 /* True global resources - no need for thread safety here */
 static int le_chardet;
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_detect, 0, 0, 2)
+	ZEND_ARG_INFO(1, fp_link)
+	ZEND_ARG_INFO(0, buf)
+	ZEND_ARG_INFO(0, type)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
+	ZEND_ARG_INFO(1, fp_link)
+ZEND_END_ARG_INFO()
+
 /* {{{ chardet_functions[]
  *
  * Every user visible function must have an entry in chardet_functions[].
@@ -89,8 +99,8 @@ const zend_function_entry chardet_functions[] = {
 	PHP_FE(chardet_py_version,		NULL)
 #endif
 	PHP_FE(chardet_open,			NULL)
-	PHP_FE(chardet_detect,			NULL)
-	PHP_FE(chardet_close,			NULL)
+	PHP_FE(chardet_detect,			arginfo_chardet_detect)
+	PHP_FE(chardet_close,			arginfo_chardet_close)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -308,21 +318,16 @@ PHP_FUNCTION(chardet_open)
  */
 PHP_FUNCTION(chardet_close)
 {
-	zval ** fp_link;
+	zval      * fp_link;
 	CharDetFP * fp;
 
-	switch (ZEND_NUM_ARGS ()) {
-		case 1:
-			if ( zend_get_parameters_ex (1, &fp_link) == FAILURE )
-				WRONG_PARAM_COUNT;
-			break;
-		default :
-				WRONG_PARAM_COUNT;
-	}
+	if ( zend_parse_parameters (ZEND_NUM_ARGS () TSRMLS_CC, "r", &fp_link) == FAILURE )
+		return;
 
-	ZEND_FETCH_RESOURCE (fp, CharDetFP *, fp_link, -1, "Chardet link", le_chardet);
-	zend_list_delete (Z_RESVAL_PP (fp_link));
+	ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
+	zend_list_delete (Z_RESVAL_P (fp_link));
 }
+// }}}
 
 /* {{{ proto char chardet (resource, string, type)
  *  resouce : stream
@@ -336,37 +341,28 @@ PHP_FUNCTION(chardet_close)
  */
 PHP_FUNCTION(chardet_detect)
 {
-	zval ** fp_link, ** buf, ** mode;
+	zval       * fp_link;
+	char       * buf;
+	int          buflen;
 	CharDetFP  * fp;
 	CharDetObj * obj    = NULL;
 	const char * string = NULL;
 #ifdef HAVE_MOZ_CHARDET
-	short type          = CHARDET_MOZ;
+	int          type = CHARDET_MOZ;
 #else
-	short type          = CHARDET_ICU;
+	int          type = CHARDET_ICU;
 #endif
-	short r             = 0;
+	short        r = 0;
 
-	switch (ZEND_NUM_ARGS ()) {
-		case 3:
-			if ( zend_get_parameters_ex (3, &fp_link, &buf, &mode) == FAILURE )
-				WRONG_PARAM_COUNT;
-
-			convert_to_long_ex (mode);
-			type = Z_LVAL_PP (mode);
-			break;
-		case 2:
-			if ( zend_get_parameters_ex (2, &fp_link, &buf) == FAILURE )
-				WRONG_PARAM_COUNT;
-			break;
-		default :
-			WRONG_PARAM_COUNT;
+	if ( zend_parse_parameters
+			(ZEND_NUM_ARGS () TSRMLS_CC, "rs|l", &fp_link, &buf, &buflen, &type) == FAILURE )
+	{
+		return;
 	}
 
-	ZEND_FETCH_RESOURCE (fp, CharDetFP *, fp_link, -1, "Chardet link", le_chardet);
+	ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
 
-	convert_to_string_ex (buf);
-	string = Z_STRVAL_PP (buf);
+	string = (const char *) buf;
 
 	if ( chardet_obj_init (&obj) < 0 ) {
 		php_error (E_ERROR, "Structure initialize failed on chardet ()");
