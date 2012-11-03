@@ -15,7 +15,7 @@
   | Author: JoungKyun.Kim <http://oops.org>                              |
   +----------------------------------------------------------------------+
 
-  $Id$
+  $Id: php_chardet.c,v 1.7 2009-02-23 14:49:20 oops Exp $
 */
 
 /*
@@ -24,15 +24,6 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
-
-// avoid conflict redefine
-#ifdef PACKAGE_NAME
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_BUGREPORT
-#endif
 #endif
 
 #include <stdio.h>
@@ -40,15 +31,6 @@
 
 #ifdef HAVE_MOZ_CHARDET
 #include <chardet.h>
-
-// avoid conflict redefine
-#ifdef PACKAGE_NAME
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_BUGREPORT
-#endif
 #endif
 
 #ifdef HAVE_ICU_CHARDET
@@ -73,21 +55,11 @@ ZEND_DECLARE_MODULE_GLOBALS(chardet)
 /* True global resources - no need for thread safety here */
 static int le_chardet;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_detect, 0, 0, 2)
-	ZEND_ARG_INFO(1, fp_link)
-	ZEND_ARG_INFO(0, buf)
-	ZEND_ARG_INFO(0, type)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
-	ZEND_ARG_INFO(1, fp_link)
-ZEND_END_ARG_INFO()
-
 /* {{{ chardet_functions[]
  *
  * Every user visible function must have an entry in chardet_functions[].
  */
-const zend_function_entry chardet_functions[] = {
+function_entry chardet_functions[] = {
 	PHP_FE(chardet_version,			NULL)
 #ifdef HAVE_MOZ_CHARDET
 	PHP_FE(chardet_moz_version,		NULL)
@@ -99,8 +71,8 @@ const zend_function_entry chardet_functions[] = {
 	PHP_FE(chardet_py_version,		NULL)
 #endif
 	PHP_FE(chardet_open,			NULL)
-	PHP_FE(chardet_detect,			arginfo_chardet_detect)
-	PHP_FE(chardet_close,			arginfo_chardet_close)
+	PHP_FE(chardet_detect,			NULL)
+	PHP_FE(chardet_close,			NULL)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -318,16 +290,21 @@ PHP_FUNCTION(chardet_open)
  */
 PHP_FUNCTION(chardet_close)
 {
-	zval      * fp_link;
+	zval ** fp_link;
 	CharDetFP * fp;
 
-	if ( zend_parse_parameters (ZEND_NUM_ARGS () TSRMLS_CC, "r", &fp_link) == FAILURE )
-		return;
+	switch (ZEND_NUM_ARGS ()) {
+		case 1:
+			if ( zend_get_parameters_ex (1, &fp_link) == FAILURE )
+				WRONG_PARAM_COUNT;
+			break;
+		default :
+				WRONG_PARAM_COUNT;
+	}
 
-	ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
-	zend_list_delete (Z_RESVAL_P (fp_link));
+	ZEND_FETCH_RESOURCE (fp, CharDetFP *, fp_link, -1, "Chardet link", le_chardet);
+	zend_list_delete (Z_RESVAL_PP (fp_link));
 }
-// }}}
 
 /* {{{ proto char chardet (resource, string, type)
  *  resouce : stream
@@ -341,28 +318,37 @@ PHP_FUNCTION(chardet_close)
  */
 PHP_FUNCTION(chardet_detect)
 {
-	zval       * fp_link;
-	char       * buf;
-	int          buflen;
+	zval ** fp_link, ** buf, ** mode;
 	CharDetFP  * fp;
 	CharDetObj * obj    = NULL;
 	const char * string = NULL;
 #ifdef HAVE_MOZ_CHARDET
-	int          type = CHARDET_MOZ;
+	short type          = CHARDET_MOZ;
 #else
-	int          type = CHARDET_ICU;
+	short type          = CHARDET_ICU;
 #endif
-	short        r = 0;
+	short r             = 0;
 
-	if ( zend_parse_parameters
-			(ZEND_NUM_ARGS () TSRMLS_CC, "rs|l", &fp_link, &buf, &buflen, &type) == FAILURE )
-	{
-		return;
+	switch (ZEND_NUM_ARGS ()) {
+		case 3:
+			if ( zend_get_parameters_ex (3, &fp_link, &buf, &mode) == FAILURE )
+				WRONG_PARAM_COUNT;
+
+			convert_to_long_ex (mode);
+			type = Z_LVAL_PP (mode);
+			break;
+		case 2:
+			if ( zend_get_parameters_ex (2, &fp_link, &buf) == FAILURE )
+				WRONG_PARAM_COUNT;
+			break;
+		default :
+			WRONG_PARAM_COUNT;
 	}
 
-	ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
+	ZEND_FETCH_RESOURCE (fp, CharDetFP *, fp_link, -1, "Chardet link", le_chardet);
 
-	string = (const char *) buf;
+	convert_to_string_ex (buf);
+	string = Z_STRVAL_PP (buf);
 
 	if ( chardet_obj_init (&obj) < 0 ) {
 		php_error (E_ERROR, "Structure initialize failed on chardet ()");
@@ -370,7 +356,7 @@ PHP_FUNCTION(chardet_detect)
 	}
 
 	switch (type) {
-		case CASE_CHARDET_MOZ :
+		case CHARDET_MOZ :
 #ifdef HAVE_MOZ_CHARDET
 			r = moz_chardet (fp, string , &obj);
 #else
@@ -378,7 +364,7 @@ PHP_FUNCTION(chardet_detect)
 			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-mod-chardet option");
 #endif
 			break;
-		case CASE_CHARDET_ICU :
+		case CHARDET_ICU :
 #ifdef HAVE_ICU_CHARDET
 			r = icu_chardet (fp, string , &obj);
 #else
@@ -386,7 +372,7 @@ PHP_FUNCTION(chardet_detect)
 			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-icu-chardet option");
 #endif
 			break;
-		case CASE_CHARDET_PY :
+		case CHARDET_PY :
 #ifdef HAVE_PY_CHARDET
 			r = py_chardet (fp, string, &obj);
 #else
@@ -404,7 +390,7 @@ PHP_FUNCTION(chardet_detect)
 	add_property_string (return_value, "encoding", obj->encoding ? obj->encoding : "", 1);
 	add_property_long (return_value, "confidence", obj->confidence);
 	add_property_long (return_value, "status", obj->status);
-	if ( type == CASE_CHARDET_ICU )
+	if ( type == CHARDET_ICU )
 		add_property_string (return_value, "lang", obj->lang ? obj->lang : "", 1);
 
 	chardet_obj_free (&obj);

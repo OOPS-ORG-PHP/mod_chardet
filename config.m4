@@ -1,4 +1,4 @@
-dnl $Id$
+dnl $Id: config.m4,v 1.5 2009-02-23 14:49:20 oops Exp $
 dnl config.m4 for extension chardet 
 
 dnl Comments in this file start with the string 'dnl'.
@@ -21,7 +21,7 @@ if test "$PHP_CHARDET" != "no"; then
 	[  --enable-py-chardet     Support python chardet [[default=no]]], [no], [no])
 
 	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
-	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.3", [Chardet extension version])
+	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.2", [Chardet extension version])
 
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
@@ -97,7 +97,7 @@ if test "$PHP_CHARDET" != "no"; then
 			AC_MSG_RESULT([$ICU_VERSION])
 			AC_DEFINE(HAVE_ICU_CHARDET,1,[ICU Chardet support])
 		else
-			if test -z "$MOZ_VERSION" ; then
+			if [ -z "$MOZ_VERSION" ]; then
 				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
 				AC_MSG_ERROR([mod_chardet is needed libicu or libchardet.])
 			else
