@@ -83,6 +83,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
 	ZEND_ARG_INFO(0, fp_link)
 ZEND_END_ARG_INFO()
 
+/* {{{ INCLUDE KRISP Classify header */
+#include "php_chardet_class.h"
+/* INCLUDE KRISP Classify header }}} */
+
 /* {{{ chardet_functions[]
  *
  * Every user visible function must have an entry in chardet_functions[].
@@ -104,64 +108,6 @@ const zend_function_entry chardet_functions[] = {
 	{NULL, NULL, NULL}
 };
 /* }}} */
-
-/* {{{ chardet_deps[]
- *
- * CHARDET dependancies
- */
-const zend_module_dep chardet_deps[] = {
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
-	ZEND_MOD_REQUIRED("spl")
-#endif
-	{NULL, NULL, NULL}
-};
-/* }}} */
-
-/* {{{ For Class declears */
-#define REGISTER_CHARDET_CLASS(parent) { \
-	zend_class_entry ce; \
-	INIT_CLASS_ENTRY (ce, "CHARDET", chardet_methods); \
-	ce.create_object = chardet_object_new_main; \
-	chardet_ce = zend_register_internal_class_ex (&ce, parent, NULL TSRMLS_CC); \
-	memcpy(&chardet_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers)); \
-	chardet_object_handlers.clone_obj = NULL; \
-	chardet_ce->ce_flags |= ZEND_ACC_FINAL_CLASS; \
-}
-
-#define REGISTER_CHARDET_PER_CLASS(name, c_name, parent) { \
-	zend_class_entry ce; \
-	INIT_CLASS_ENTRY(ce, "CHARDET" # name, chardet_methods_ ## c_name); \
-	ce.create_object = chardet_object_new_ ## c_name; \
-	chardet_ce_ ## c_name = zend_register_internal_class_ex(&ce, parent, NULL TSRMLS_CC); \
-	memcpy(&chardet_object_handlers_ ## c_name, zend_get_std_object_handlers(), sizeof(zend_object_handlers)); \
-	chardet_object_handlers_ ## c_name.clone_obj = NULL; \
-	chardet_ce_ ## c_name->ce_flags |= ZEND_ACC_FINAL_CLASS; \
-}
-
-zend_class_entry * chardet_ce;
-zend_class_entry * chardet_ce_exception;
-static zend_object_handlers chardet_object_handlers;
-static zend_object_handlers chardet_object_handlers_exception;
-
-typedef struct _chardet_object {
-	zend_object     std;
-	union {
-		CharDetFP * fp;
-		void      * ptr;
-	} u;
-} chardet_obj;
-
-const zend_function_entry chardet_methods[] = {
-	PHP_ME_MAPPING (__construct,   chardet_open,               NULL,                   ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (close,         chardet_close,              arginfo_chardet_close,  ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (detect,        chardet_detect,             arginfo_chardet_detect, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
-};
-
-const zend_function_entry chardet_methods_exception[] = {
-    {NULL, NULL, NULL}
-};
-/* For Class declears }}} */
 
 /* {{{ chardet_module_entry
  */
@@ -220,62 +166,9 @@ static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ Class API */
-static int chardet_free_persistent (zend_rsrc_list_entry * le, void * ptr TSRMLS_DC) {
-	return le->ptr == ptr ? ZEND_HASH_APPLY_REMOVE : ZEND_HASH_APPLY_KEEP;
-}
-
-static void chardet_object_free_storage (void * object TSRMLS_DC) {
-	chardet_obj * intern = (chardet_obj *) object;
-
-	zend_object_std_dtor (&intern->std TSRMLS_CC);
-
-	if ( intern->u.ptr ) {
-		if ( intern->u.fp->rsrc ) {
-			zend_list_delete (intern->u.fp->rsrc);
-			zend_hash_apply_with_argument (
-				&EG(persistent_list),
-				(apply_func_arg_t) chardet_free_persistent,
-				&intern->u.ptr TSRMLS_CC
-			);
-		}
-	}
-
-	efree(object);
-}
-
-static void chardet_object_new (zend_class_entry *class_type, zend_object_handlers *handlers, zend_object_value *retval TSRMLS_DC)
-{
-	chardet_obj * intern;
-	zval  * tmp;
-
-	intern = emalloc (sizeof (chardet_obj));
-	memset (intern, 0, sizeof (chardet_obj));
-
-	zend_object_std_init (&intern->std, class_type TSRMLS_CC);
-	retval->handle = zend_objects_store_put(
-		intern,
-		(zend_objects_store_dtor_t) zend_objects_destroy_object,
-		(zend_objects_free_object_storage_t) chardet_object_free_storage,
-		NULL TSRMLS_CC
-	);
-	retval->handlers = handlers;
-}
-
-static zend_object_value chardet_object_new_main (zend_class_entry * class_type TSRMLS_DC) {
-	zend_object_value retval;
-
-	chardet_object_new (class_type, &chardet_object_handlers, &retval TSRMLS_CC);
-	return retval;
-}
-
-static zend_object_value chardet_object_new_exception (zend_class_entry * class_type TSRMLS_DC) {
-	zend_object_value retval;
-
-	chardet_object_new (class_type, &chardet_object_handlers_exception, &retval TSRMLS_CC);
-	return retval;
-}
-/* Class API }}} */
+/* {{{ INCLUDE KRISP Classify API */
+#include "php_chardet_class.c"
+/* INCLUDE KRISP Classify header }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
