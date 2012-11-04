@@ -74,13 +74,13 @@ ZEND_DECLARE_MODULE_GLOBALS(chardet)
 static int le_chardet;
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_detect, 0, 0, 2)
-	ZEND_ARG_INFO(1, fp_link)
+	ZEND_ARG_INFO(0, fp_link)
 	ZEND_ARG_INFO(0, buf)
 	ZEND_ARG_INFO(0, type)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
-	ZEND_ARG_INFO(1, fp_link)
+	ZEND_ARG_INFO(0, fp_link)
 ZEND_END_ARG_INFO()
 
 /* {{{ chardet_functions[]
