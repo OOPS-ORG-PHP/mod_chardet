@@ -156,29 +156,6 @@ short py_chardet (CharDetFP *, const char *, CharDetObj **);
 #define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
 #endif
 
-/* Exception declear {{{
- *  *
- *   */
-#if PHP_MAJOR_VERSION >= 5
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
-extern PHPAPI zend_class_entry *spl_ce_RuntimeException;
-extern PHPAPI zend_class_entry *spl_ce_Countable;
-#endif
-
-#define CHARDET_REPLACE_ERROR_HANDLING \
-	zend_replace_error_handling ( \
-		object ? EH_THROW : EH_NORMAL, \
-		chardet_ce_exception, \
-		&error_handling TSRMLS_CC \
-	)
-
-#define CHARDET_RESTORE_ERROR_HANDLING zend_restore_error_handling (&error_handling TSRMLS_CC)
-#else
-#define CHARDET_REPLACE_ERROR_HANDLIN0 int chardet_error_dummy_handing = 1
-#define CHARDET_RESTORE_ERROR_HANDLING chardet_error_dummy_handing = 0
-#endif
-/* }}} */
-
 #endif	/* PHP_CHARDET_H */
 
 /*
