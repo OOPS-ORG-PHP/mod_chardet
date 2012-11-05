@@ -1,5 +1,5 @@
 /*
- * $Id: php_chardet.h 26 2012-11-03 17:45:58Z oops $
+ * $Id$
  */
 
 #ifndef PHP_CHARDET_CLASS_H
