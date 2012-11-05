@@ -1,13 +1,19 @@
-/*
-  +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2012 OOPS.org                                     |
-  +----------------------------------------------------------------------+
-  | Author: JoungKyun.Kim <http://oops.org>                              |
-  +----------------------------------------------------------------------+
-
-  $Id: php_chardet.c 28 2012-11-04 08:47:46Z oops $
-*/
-
+/**
+ * Project: mod_chardet :: Character set detect API
+ * File:    mod_chardet_class.c
+ *
+ * Copyright (c) 2012 JoungKyun.Kim
+ *
+ * LICENSE: MPL or GPL
+ *
+ * @category    Charset
+ * @package     mod_chardet
+ * @author      JoungKyun.Kim <http://oops.org>
+ * @copyright   2012 OOPS.org
+ * @license     MPL or GPL
+ * @version     SVN: $Id$
+ * @since       File available since release 0.0.1
+ */
 
 /*
  * PHP5 Charaset Detect library module "chardet"
