@@ -97,11 +97,19 @@ if test "$PHP_CHARDET" != "no"; then
 			AC_MSG_RESULT([$ICU_VERSION])
 			AC_DEFINE(HAVE_ICU_CHARDET,1,[ICU Chardet support])
 		else
-			if test -z "$MOZ_VERSION" ; then
-				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
-				AC_MSG_ERROR([mod_chardet is needed libicu or libchardet.])
+			pkg-config icu > /dev/null 2>&1
+			if test $? -eq 0; then
+				ICU_VERSION=$(pkg-config --modversion icu)
+				ICU_LIBS=$(pkg-config --libs icu)
+				ICU_LIBDIR=$(pkg-config --cflags-only-other icu)
+				CPPFLAGS="$CPPFLAGS $(pkgconfig --cflags icu)"
 			else
-				AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
+				if test -z "$MOZ_VERSION" ; then
+					AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
+					AC_MSG_ERROR([mod_chardet is needed libicu or libchardet.])
+				else
+					AC_MSG_NOTICE([can't find. specify --enable-icu-chardet=/path/icu-config])
+				fi
 			fi
 		fi
 	fi
