@@ -10,6 +10,10 @@ dnl If your extension references something external, use with:
 PHP_ARG_WITH(chardet, for charset detect support,
 [  --with-chardet          Include charset detect support])
 
+if test "x$PHP_EXECUTABLE" = "xNONE"; then
+    PHP_EXECUTABLE="/usr/bin/php"
+fi
+
 if test "$PHP_CHARDET" != "no"; then
 	PHP_ARG_ENABLE(moz-chardet, for Mozilla chardet support,
 	[  --enable-moz-chardet    Support Mozilla chardet [[default=yes]]], [no])
@@ -21,7 +25,7 @@ if test "$PHP_CHARDET" != "no"; then
 	[  --enable-py-chardet     Support python chardet [[default=no]]], [no], [no])
 
 	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
-	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.4", [Chardet extension version])
+	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.5", [Chardet extension version])
 
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
