@@ -80,9 +80,9 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
 	ZEND_ARG_INFO(0, fp_link)
 ZEND_END_ARG_INFO()
 
-/* {{{ INCLUDE KRISP Classify header */
+/* {{{ INCLUDE CHARDET Classify header */
 #include "php_chardet_class.h"
-/* INCLUDE KRISP Classify header }}} */
+/* INCLUDE CHARDET Classify header }}} */
 
 /* {{{ chardet_functions[]
  *
@@ -163,9 +163,9 @@ static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ INCLUDE KRISP Classify API */
+/* {{{ INCLUDE CHARDET Classify API */
 #include "php_chardet_class.c"
-/* INCLUDE KRISP Classify header }}} */
+/* INCLUDE CHARDET Classify header }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
