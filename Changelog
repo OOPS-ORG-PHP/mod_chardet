@@ -2,6 +2,15 @@ PHP Charset Detect Extension Changelog
 
 $Id$
 
+* 0.0.5
+--------------------------------------------------------------------------------
+
+Fri Nov 16 2012
+by JoungKyun.Kim <http://oops.org>
+	- version update 0.0.5
+	- add make test scripts
+
+
 * 0.0.4
 --------------------------------------------------------------------------------
 
