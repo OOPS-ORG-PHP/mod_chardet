@@ -274,7 +274,7 @@ PHP_FUNCTION(chardet_py_version)
 /* }}} */
 #endif
 
-/* {{{ proto resource chardet_open (void)
+/* {{{ proto (resource) chardet_open (void)
  */
 PHP_FUNCTION(chardet_open)
 {
@@ -355,7 +355,7 @@ PHP_FUNCTION(chardet_open)
 }
 /* }}} */
 
-/* {{{ proto void chardet_close (resource)
+/* {{{ proto (bool) chardet_close (resource link)
  */
 PHP_FUNCTION(chardet_close)
 {
@@ -381,11 +381,11 @@ PHP_FUNCTION(chardet_close)
 }
 // }}}
 
-/* {{{ proto char chardet_detect (resource, string, type)
+/* {{{ proto (object|false) chardet_detect (resource link, string buffer[, type method])
  *  resouce : stream
  *  string : string that checked encoding
  *  type   : CHARDET_ICU or CHARDET_MOZ or CHARDET_PY
- *  return object result
+ *  return object result or false
  *     -> encoding
  *     -> lang
  *     -> confidence
