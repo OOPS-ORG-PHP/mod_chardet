@@ -1,7 +1,14 @@
 #!/usr/bin/php
 <?
-if ( ! extension_loaded ('chardet') )
-	dl ('chardet.so');
+if ( ! extension_loaded ('chardet') ) {
+	if ( PHP_VERSION_ID > 50399 ) {
+		fprintf (STDERR, "Chardet module not loaded!\n");
+		exit (1);
+	} else {
+		if ( ini_get ('enable_dl') )
+			dl ('chardet.so');
+	}
+}
 
 $strings = array (
 	'안녕하세요 abc는 영어고요, 가나다는 한글 입니다.',
