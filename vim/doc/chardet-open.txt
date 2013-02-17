@@ -1,0 +1,35 @@
+*chardet_open* -- Get chardet library handle
+
+  (resource|false) chardet_open (void)~
+
+|chardet_open| 함수는 libchardet handle을 resource로 반환한다.
+
+성공시에 database resource를 반환하고, 실패시에 FALSE를 반환한다.
+
+libchardet은 Mozilla universal charset detect library와 ICU library,
+그리고 Mozilla universal charset detect를 python pure code로 만들어
+놓은 python-chardet 3가지 엔진을 이용할 수 있으며, 빌드시에 이 library
+들의 지원 여부에 따라 CHARDET_MOZ, CHARDET_ICU, CHARDET_PY 3가지
+constant들이 1또는 0으로 설정이 된다.
+
+
+|chardet_open| 함수의 예제는 다음과 같다.
+
+<?php >
+  echo 'Chardet open is ';
+  if ( is_resource ($ch = chardet_open ()) ) {
+    echo "success\n";
+    chardet_close ($ch);
+  } else {
+    echo "failure\n";
+  }
+?>
+
+위의 예제는 다음과 같이 출력이 된다:
+
+  Chardet open is success
+
+|chardet_close|
+
+
+vim:ft=help:
