@@ -381,7 +381,7 @@ PHP_FUNCTION(chardet_close)
 }
 // }}}
 
-/* {{{ proto char chardet (resource, string, type)
+/* {{{ proto char chardet_detect (resource, string, type)
  *  resouce : stream
  *  string : string that checked encoding
  *  type   : CHARDET_ICU or CHARDET_MOZ or CHARDET_PY
