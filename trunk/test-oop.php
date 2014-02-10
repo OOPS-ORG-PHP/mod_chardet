@@ -45,7 +45,7 @@ try {
 		#                                status      : error code (0 is not error)
 		#
 		if ( CHARDET_MOZ != -1 )
-			$moz = $chardet->detect ();
+			$moz = $chardet->detect ($s);
 		if ( CHARDET_ICU != -1 )
 			$icu = $chardet->detect ($s, CHARDET_ICU);
 		if ( CHARDET_PY != -1 )
