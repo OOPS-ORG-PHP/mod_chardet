@@ -2,14 +2,14 @@
  * Project: mod_chardet :: Character set detect API
  * File:    mod_chardet.c
  *
- * Copyright (c) 2012 JoungKyun.Kim
+ * Copyright (c) 2015 JoungKyun.Kim
  *
  * LICENSE: MPL or GPL
  *
  * @category    Charset
  * @package     mod_chardet
  * @author      JoungKyun.Kim <http://oops.org>
- * @copyright   2012 OOPS.org
+ * @copyright   2015 OOPS.org
  * @license     MPL or GPL
  * @version     SVN: $Id$
  * @since       File available since release 0.0.1
@@ -34,6 +34,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
+
+#undef _POSIX_C_SOURCE
 
 #ifdef HAVE_MOZ_CHARDET
 #include <chardet.h>
@@ -63,6 +65,13 @@
 
 #include "php_chardet.h"
 
+#if PHP_API_VERSION < 20151012
+#error "************ PHP version dependency problems *******************"
+#error "This package requires over php 7.0.0 !!"
+#error "If you build with php under 7.0.0, use mod_chardet 0.x version"
+#error "You can download mod_krisp 2.x at http://mirror.oops.org/pub/oops/php/extensions/mod_chardet/"
+#endif
+
 /* If you declare any globals in php_chardet.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(chardet)
 */
@@ -89,19 +98,19 @@ ZEND_END_ARG_INFO()
  * Every user visible function must have an entry in chardet_functions[].
  */
 const zend_function_entry chardet_functions[] = {
-	PHP_FE(chardet_version,			NULL)
+	PHP_FE(chardet_version,     NULL)
 #ifdef HAVE_MOZ_CHARDET
-	PHP_FE(chardet_moz_version,		NULL)
+	PHP_FE(chardet_moz_version, NULL)
 #endif
 #ifdef HAVE_ICU_CHARDET
-	PHP_FE(chardet_icu_version,		NULL)
+	PHP_FE(chardet_icu_version, NULL)
 #endif
 #ifdef HAVE_PY_CHARDET
-	PHP_FE(chardet_py_version,		NULL)
+	PHP_FE(chardet_py_version,  NULL)
 #endif
-	PHP_FE(chardet_open,			NULL)
-	PHP_FE(chardet_detect,			arginfo_chardet_detect)
-	PHP_FE(chardet_close,			arginfo_chardet_close)
+	PHP_FE(chardet_open,        NULL)
+	PHP_FE(chardet_detect,      arginfo_chardet_detect)
+	PHP_FE(chardet_close,       arginfo_chardet_close)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -134,9 +143,9 @@ zend_module_entry chardet_module_entry = {
 ZEND_GET_MODULE(chardet)
 #endif
 
-/* {{{ _close_chardet_link (zend_rsrc_list_entry *rsrc TSRMLS_DC)
+/* {{{ _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
  */
-static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
+static void _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
 {
 	CharDetFP * fp = (CharDetFP *) rsrc->ptr;
 
@@ -171,15 +180,13 @@ static void _close_chardet_link (zend_rsrc_list_entry * rsrc TSRMLS_DC)
  */
 PHP_MINIT_FUNCTION(chardet)
 {
-	le_chardet = zend_register_list_destructors_ex (_close_chardet_link, NULL, "Chardet link", module_number);
+	le_chardet = zend_register_list_destructors_ex (NULL, _close_chardet_link, "Chardet link", module_number);
 
 	REGISTER_CHARDET_CLASS(NULL);
-	chardet_ce->ce_flags &= ~ZEND_ACC_FINAL_CLASS;
-	chardet_ce->constructor->common.fn_flags |= ZEND_ACC_FINAL;
 
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+#if defined(HAVE_SPL)
 	REGISTER_CHARDET_PER_CLASS(Exception, exception, spl_ce_RuntimeException);
-#elif PHP_MAJOR_VERSION >= 5
+#else
 	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_exception_get_default(TSRMLS_C));
 #endif
 
@@ -224,7 +231,7 @@ PHP_MINFO_FUNCTION(chardet)
 								"Python"
 #endif
 	" library");
-	php_info_print_table_row(2, "URL", "http://devel.oops.org/");
+	php_info_print_table_row(2, "URL", "http://oops.org/");
 	php_info_print_table_row(2, "Build version", CHARDET_VERSION);
 #ifdef HAVE_ICU_CHARDET
 	php_info_print_table_row(2, "ICU Library version", U_ICU_VERSION);
@@ -240,7 +247,7 @@ PHP_MINFO_FUNCTION(chardet)
  *  print chardet extension build number */
 PHP_FUNCTION(chardet_version)
 {
-	RETURN_STRING (CHARDET_VERSION, 1);
+	RETURN_STRING (CHARDET_VERSION);
 }
 /* }}} */
 
@@ -249,7 +256,7 @@ PHP_FUNCTION(chardet_version)
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_moz_version)
 {
-	RETURN_STRING (LIBCHARDET_VER, 1);
+	RETURN_STRING (LIBCHARDET_VER);
 }
 /* }}} */
 #endif
@@ -259,7 +266,7 @@ PHP_FUNCTION(chardet_moz_version)
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_icu_version)
 {
-	RETURN_STRING (U_ICU_VERSION, 1);
+	RETURN_STRING (U_ICU_VERSION);
 }
 /* }}} */
 #endif
@@ -269,7 +276,7 @@ PHP_FUNCTION(chardet_icu_version)
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_py_version)
 {
-	RETURN_STRING (PY_CHARDET_VERSION, 1);
+	RETURN_STRING (PY_CHARDET_VERSION);
 }
 /* }}} */
 #endif
@@ -278,8 +285,8 @@ PHP_FUNCTION(chardet_py_version)
  */
 PHP_FUNCTION(chardet_open)
 {
-	zval      * object = getThis ();
-	CharDetFP * fp = NULL;
+	zval             * object = getThis ();
+	CharDetFP        * fp = NULL;
 	zend_error_handling error_handling;
 #ifdef HAVE_ICU_CHARDET
 	UErrorCode status = U_ZERO_ERROR;
@@ -340,16 +347,14 @@ PHP_FUNCTION(chardet_open)
 	}
 #endif
 
-	fp->rsrc = ZEND_REGISTER_RESOURCE (
-			object ? NULL : return_value,
-			fp, le_chardet
-	);
-
 	if ( object ) {
 		chardet_obj * obj;
-		obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
+		obj = Z_CHARDET_P (object);
 		obj->u.fp = fp;
 	}
+
+	fp->rsrc = zend_register_resource (fp, le_chardet);
+	RETVAL_RES (fp->rsrc);
 
 	CHARDET_RESTORE_ERROR_HANDLING;
 }
@@ -359,22 +364,22 @@ PHP_FUNCTION(chardet_open)
  */
 PHP_FUNCTION(chardet_close)
 {
-	zval      * fp_link;
-	zval      * object = getThis ();
-	CharDetFP * fp;
+	zval        * fp_link;
+	zval        * object = getThis ();
+	CharDetFP   * fp;
 	chardet_obj * obj;
 
 	if ( object ) {
-		obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
+		obj = Z_CHARDET_P (object);
 		if ( ! obj->u.fp )
 			RETURN_TRUE;
 		zend_list_delete (obj->u.fp->rsrc);
 	} else {
-		if ( zend_parse_parameters (ZEND_NUM_ARGS () TSRMLS_CC, "r", &fp_link) == FAILURE )
+		if ( zend_parse_parameters (ZEND_NUM_ARGS (), "r", &fp_link) == FAILURE )
 			return;
 
-		ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
-		zend_list_delete (Z_RESVAL_P (fp_link));
+		CHARDET_FETCH_RESOURCE (fp, CharDetFP *, fp_link, "Chardet link", le_chardet);
+		zend_list_delete (Z_RES_P (fp_link));
 	}
 
 	RETURN_TRUE;
@@ -393,18 +398,17 @@ PHP_FUNCTION(chardet_close)
  */
 PHP_FUNCTION(chardet_detect)
 {
-	zval       * fp_link;
-	char       * buf;
-	int          buflen;
-	CharDetFP  * fp;
-	CharDetObj * obj    = NULL;
-	const char * string = NULL;
+	zval        * fp_link;
+	zend_string * buf;
+	CharDetFP   * fp;
+	CharDetObj  * obj    = NULL;
+	const char  * string = NULL;
 #ifdef HAVE_MOZ_CHARDET
-	int          type = CHARDET_MOZ;
+	zend_long     type = CHARDET_MOZ;
 #else
-	int          type = CHARDET_ICU;
+	zend_long     type = CHARDET_ICU;
 #endif
-	short        r = 0;
+	short         r = 0;
 
 	zval        * object = getThis ();
 	chardet_obj * Obj;
@@ -414,32 +418,38 @@ PHP_FUNCTION(chardet_detect)
 
 	if ( object ) {
 		if ( zend_parse_parameters
-				(ZEND_NUM_ARGS () TSRMLS_CC, "s|l", &buf, &buflen, &type) == FAILURE )
+				(ZEND_NUM_ARGS (), "S|l", &buf, &type) == FAILURE )
 		{
 			CHARDET_RESTORE_ERROR_HANDLING;
 			return;
 		}
 	} else {
 		if ( zend_parse_parameters
-				(ZEND_NUM_ARGS () TSRMLS_CC, "rs|l", &fp_link, &buf, &buflen, &type) == FAILURE )
+				(ZEND_NUM_ARGS (), "rS|l", &fp_link, &buf, &type) == FAILURE )
 		{
 			CHARDET_RESTORE_ERROR_HANDLING;
 			return;
 		}
 	}
 
+	if ( ! ZSTR_LEN (buf) ) {
+		php_error_docref (NULL, E_WARNING, "Missing check strings");
+		CHARDET_RESTORE_ERROR_HANDLING;
+		RETURN_FALSE;
+	}
+
 	if ( object ) {
-		Obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
+		Obj = Z_CHARDET_P (object);
 		fp = Obj->u.fp;
 		if ( ! fp ) {
-			php_error_docref (NULL TSRMLS_CC, E_WARNING, "No CHARDET object available");
+			php_error_docref (NULL, E_WARNING, "No CHARDET object available");
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 		}
 	} else
-		ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
+		CHARDET_FETCH_RESOURCE (fp, CharDetFP *, fp_link, "Chardet link", le_chardet);
 
-	string = (const char *) buf;
+	string = (const char *) ZSTR_VAL (buf);
 
 	if ( chardet_obj_init (&obj) < 0 ) {
 		php_error (E_ERROR, "Structure initialize failed on chardet ()");
@@ -486,17 +496,18 @@ PHP_FUNCTION(chardet_detect)
 	}
 
 	object_init (return_value);
-	add_property_string (return_value, "encoding", obj->encoding ? obj->encoding : "", 1);
+	add_property_string (return_value, "encoding", obj->encoding ? obj->encoding : "");
 	add_property_long (return_value, "confidence", obj->confidence);
 	add_property_long (return_value, "status", obj->status);
 	if ( type == CASE_CHARDET_ICU )
-		add_property_string (return_value, "lang", obj->lang ? obj->lang : "", 1);
+		add_property_string (return_value, "lang", obj->lang ? obj->lang : "");
 
 	chardet_obj_free (&obj);
 	CHARDET_RESTORE_ERROR_HANDLING;
 }
 /* }}} */
 
+// {{{ void chardet_fp_free (CharDetFP ** fp)
 void chardet_fp_free (CharDetFP ** fp) {
 #ifdef HAVE_MOZ_CHARDET
 	if ( (*fp)->moz_status )
@@ -509,7 +520,9 @@ void chardet_fp_free (CharDetFP ** fp) {
 	(*fp)->csd_status = 0;
 #endif
 }
+// }}}
 
+// {{{ short chardet_obj_init (CharDetObj ** obj)
 short chardet_obj_init (CharDetObj ** obj) {
 	*obj = (CharDetObj *) emalloc (sizeof (CharDetObj));
 
@@ -523,7 +536,9 @@ short chardet_obj_init (CharDetObj ** obj) {
 
 	return 0;
 }
+// }}}
 
+// {{{ void chardet_obj_free (CharDetObj ** obj)
 void chardet_obj_free (CharDetObj ** obj) {
 	if ( *obj != NULL ) {
 		SAFE_EFREE((*obj)->encoding)
@@ -531,11 +546,13 @@ void chardet_obj_free (CharDetObj ** obj) {
 		SAFE_EFREE(*obj)
 	}
 }
+// }}}
 
 #ifdef HAVE_MOZ_CHARDET
+// {{{ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
 short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
-	DetectObj *mo;
-	short r;
+	DetectObj * mo;
+	short       r;
 
 	mo = detect_obj_init ();
 	if ( mo == NULL ) {
@@ -560,13 +577,15 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	return 0;
 }
+// }}}
 #endif
 
 #ifdef HAVE_ICU_CHARDET
+// {{{ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
 short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	const UCharsetMatch * ucm;
-	UErrorCode status = U_ZERO_ERROR;
-	CharDetObj * ret;
+	UErrorCode            status = U_ZERO_ERROR;
+	CharDetObj          * ret;
 
 	ucsdet_setText(fp->csd, buf, strlen (buf), &status);
 	(*obj)->status = status;
@@ -586,16 +605,18 @@ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	return 0;
 }
+// }}}
 #endif
 
 #ifdef HAVE_PY_CHARDET
+// {{{ short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
 short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
-	char * pytmp = NULL;
-	char * pybuf = NULL;
-	size_t buflen;
-	int pos = 0;
+	char     * pytmp = NULL;
+	char     * pybuf = NULL;
+	size_t     buflen;
+	Py_ssize_t pos = 0;
 
 	if ( buf == NULL ) {
 		(*obj)->status = PY_BUFNULL;
@@ -663,6 +684,7 @@ short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 	return 0;
 }
+// }}}
 #endif
 
 /*

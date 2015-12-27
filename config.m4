@@ -25,7 +25,7 @@ if test "$PHP_CHARDET" != "no"; then
 	[  --enable-py-chardet     Support python chardet [[default=no]]], [no], [no])
 
 	AC_DEFINE(HAVE_CHARDET,1,[Support CHARDET Extension])
-	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "0.0.5", [Chardet extension version])
+	AC_DEFINE_UNQUOTED(CHARDET_VERSION, "1.0.0", [Chardet extension version])
 
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
