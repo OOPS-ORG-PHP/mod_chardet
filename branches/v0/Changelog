@@ -1,0 +1,59 @@
+PHP Charset Detect Extension Changelog
+
+$Id$
+
+* 0.0.5
+--------------------------------------------------------------------------------
+
+Fri Nov 16 2012
+by JoungKyun.Kim <http://oops.org>
+	- version update 0.0.5
+	- add make test scripts
+
+
+* 0.0.4
+--------------------------------------------------------------------------------
+
+Sun Nov  3 2012
+by JoungKyun.Kim <http://oops.org>
+	- fixed deprecated zend_get_parameters_ex
+	- support OOP method and exception
+
+Fri Nov  1 2012
+by JoungKyun.Kim <http://oops.org>
+	- support PHP 5.4
+
+
+* 0.0.3
+--------------------------------------------------------------------------------
+
+Mon Oct  5 2009
+by JoungKyun Kim <http://oops.org>
+	- fixed config.m4 shell test syntax
+	- fixed compile error when undefined HAVE_ICU_CHARDET
+
+
+* 0.0.2
+--------------------------------------------------------------------------------
+
+Thu Feb 23 2009
+by JoungKyun Kim <http://oops.org>
+	- changed moz to py
+	- add mozilla universal charset detect mode with c library
+
+
+* 0.0.1
+--------------------------------------------------------------------------------
+
+Thu Feb 20 2009
+by JoungKyun Kim <http://oops.org>
+	- changed Py_Initialize to Py_InitializeEx
+	- fix problem that confidencial set 0 if confidencial is int, on moz_chardet
+	- changed efree to SAFE_EFREE macro
+	- support Mozilla Univercial Chardet
+	- replace python conflict charactor
+
+Wed Feb 19 2009
+by JoungKyun Kim <http://oops.org>
+	- first build
+
