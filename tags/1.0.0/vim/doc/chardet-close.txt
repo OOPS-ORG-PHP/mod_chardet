@@ -1,0 +1,20 @@
+*chardet_close* -- Close the libchardet handle
+
+  (bool) chardet_close (resource link)~
+
+|chardet_close| 함수는 libchardet handle을 종료한다.
+
+{link} |chardet_open|에 의해서 반환된 resource
+
+|chardet_close| 예제
+
+<?php >
+  $c = chardet_open ();
+  if ( is_resource ($c) )
+    chardet_close ($c);
+?>
+
+|chardet_open|
+
+
+vim:ft=help:

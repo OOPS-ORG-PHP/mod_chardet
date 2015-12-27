@@ -1,0 +1,22 @@
+*chardet_version* -- Returns version of mod_chardet
+
+  (string) chardet_version (void)~
+
+|chardet_version| 함수는 mod_chardet 확장의 버전을 반환한다.
+
+다음은 |chardet_version| 함수의 출력 결과를 보여준다.
+
+<?php >
+  echo "The version of mod_chardet extension is ";
+  echo chardet_version () . ".\n";
+?>
+
+위의 예제의 결과는 다음과 같다:
+
+  The version of mod_chardet extension is 0.0.5.
+
+
+|chardet_open| |chardet_close| |chardet_detect|
+
+
+vim:ft=help:
