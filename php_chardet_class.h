@@ -20,7 +20,7 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
 
 #define CHARDET_REPLACE_ERROR_HANDLING \
 	zend_replace_error_handling ( \
-		object ? EH_THROW : EH_NORMAL, \
+		EH_THROW, \
 		chardet_ce_exception, \
 		&error_handling \
 	)
