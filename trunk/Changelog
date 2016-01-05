@@ -2,6 +2,14 @@ PHP Charset Detect Extension Changelog
 
 $Id$
 
+* 1.0.1
+--------------------------------------------------------------------------------
+
+Wed Jan  6 2016
+by JoungKyun.Kim <http://oops.org>
+	- support Exception on non-oop mode
+
+
 * 1.0.0
 --------------------------------------------------------------------------------
 
