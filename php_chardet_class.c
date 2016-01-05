@@ -46,7 +46,7 @@ static void chardet_object_free_storage (zend_object * object) {
 		}
 	}
 
-	efree(object);
+	SAFE_EFREE (object);
 }
 
 static void chardet_object_new (zend_class_entry *class_type, zend_object_handlers *handlers, zend_object **retval TSRMLS_DC)

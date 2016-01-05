@@ -541,9 +541,9 @@ short chardet_obj_init (CharDetObj ** obj) {
 // {{{ void chardet_obj_free (CharDetObj ** obj)
 void chardet_obj_free (CharDetObj ** obj) {
 	if ( *obj != NULL ) {
-		SAFE_EFREE((*obj)->encoding)
-		SAFE_EFREE((*obj)->lang)
-		SAFE_EFREE(*obj)
+		SAFE_EFREE ((*obj)->encoding)
+		SAFE_EFREE ((*obj)->lang)
+		SAFE_EFREE (*obj)
 	}
 }
 // }}}
