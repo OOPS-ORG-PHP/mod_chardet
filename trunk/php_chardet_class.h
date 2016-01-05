@@ -74,11 +74,8 @@ static zend_object_handlers chardet_object_handlers;
 static zend_object_handlers chardet_object_handlers_exception;
 
 typedef struct _chardet_object {
-	zend_object     std;
-	union {
-		CharDetFP * fp;
-		void      * ptr;
-	} u;
+	CharDetFP * fp;
+	zend_object std;
 } chardet_obj;
 /* For Class declears }}} */
 

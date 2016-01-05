@@ -8,6 +8,7 @@ $Id$
 Wed Jan  6 2016
 by JoungKyun.Kim <http://oops.org>
 	- support Exception on non-oop mode
+	- fixed segfault
 
 
 * 1.0.0
