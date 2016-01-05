@@ -143,15 +143,15 @@ zend_module_entry chardet_module_entry = {
 ZEND_GET_MODULE(chardet)
 #endif
 
-/* {{{ _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
+/* {{{ _close_chardet_link (zend_resource * res)
  */
-static void _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
+static void _close_chardet_link (zend_resource * res)
 {
-	if ( ! rsrc )
+	if ( ! res)
 		return;
 
-	if ( rsrc->ptr ) {
-		CharDetFP * fp = (CharDetFP *) rsrc->ptr;
+	if ( res->ptr ) {
+		CharDetFP * fp = (CharDetFP *) res->ptr;
 
 		if ( ! fp  )
 			return;
