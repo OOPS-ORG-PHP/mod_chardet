@@ -295,7 +295,7 @@ PHP_FUNCTION(chardet_open)
 	CHARDET_REPLACE_ERROR_HANDLING;
 
 	if ( (fp = (CharDetFP *) emalloc (sizeof (CharDetFP))) == NULL ) {
-		php_error (E_ERROR, "handle memory allocation failed.");
+		php_error_docref (NULL, E_ERROR, "handle memory allocation failed.");
 		CHARDET_RESTORE_ERROR_HANDLING;
 		RETURN_FALSE;
 	}
@@ -303,7 +303,7 @@ PHP_FUNCTION(chardet_open)
 #ifdef HAVE_MOZ_CHARDET
 	fp->moz = detect_init ();
 	if ( fp->moz == NULL ) {
-		php_error (E_WARNING, "Mozilla chardet handle open failed.");
+		php_error_docref (NULL, E_WARNING, "Mozilla chardet handle open failed.");
 		chardet_fp_free (&fp);
 		CHARDET_RESTORE_ERROR_HANDLING;
 		RETURN_FALSE;
@@ -316,7 +316,7 @@ PHP_FUNCTION(chardet_open)
 	fp->csd = ucsdet_open (&status);
 
 	if ( status != U_ZERO_ERROR ) {
-		php_error (E_WARNING, "ICU chardet handle open failed.");
+		php_error_docref (NULL, E_WARNING, "ICU chardet handle open failed.");
 		chardet_fp_free (&fp);
 		CHARDET_RESTORE_ERROR_HANDLING;
 		RETURN_FALSE;
@@ -334,7 +334,7 @@ PHP_FUNCTION(chardet_open)
 
 	fp->pMainDictionary = PyModule_GetDict (fp->pMainModule);
 	if ( PyRun_SimpleString ("import chardet.universaldetector\n") == -1 ) {
-		php_error (E_WARNING, "Load failed python chardet module");
+		php_error_docref (NULL, E_WARNING, "Load failed python chardet module");
 		chardet_fp_free (&fp);
 		CHARDET_RESTORE_ERROR_HANDLING;
 		RETURN_FALSE;
@@ -452,7 +452,7 @@ PHP_FUNCTION(chardet_detect)
 	string = (const char *) ZSTR_VAL (buf);
 
 	if ( chardet_obj_init (&obj) < 0 ) {
-		php_error (E_ERROR, "Structure initialize failed on chardet ()");
+		php_error_docref (NULL, E_ERROR, "Structure initialize failed on chardet ()");
 		CHARDET_RESTORE_ERROR_HANDLING;
 		RETURN_FALSE;
 	}
@@ -463,7 +463,7 @@ PHP_FUNCTION(chardet_detect)
 			r = moz_chardet (fp, string , &obj);
 #else
 			chardet_obj_free (&obj);
-			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-mod-chardet option");
+			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-mod-chardet option");
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 #endif
@@ -473,7 +473,7 @@ PHP_FUNCTION(chardet_detect)
 			r = icu_chardet (fp, string , &obj);
 #else
 			chardet_obj_free (&obj);
-			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-icu-chardet option");
+			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-icu-chardet option");
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 #endif
@@ -483,14 +483,14 @@ PHP_FUNCTION(chardet_detect)
 			r = py_chardet (fp, string, &obj);
 #else
 			chardet_obj_free (&obj);
-			php_error (E_ERROR, "Unsupport this rumtimes. Build with --enable-py-chardet option");
+			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-py-chardet option");
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 #endif
 			break;
 		default :
 			chardet_obj_free (&obj);
-			php_error (E_ERROR, "Unknown TYPE argument 3 on chardet (). Use CHARDET_MOZ or CHARDET_ICU or CHARDET_PY");
+			php_error_docref (NULL, E_ERROR, "Unknown TYPE argument 3 on chardet (). Use CHARDET_MOZ or CHARDET_ICU or CHARDET_PY");
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 	}
