@@ -147,28 +147,34 @@ ZEND_GET_MODULE(chardet)
  */
 static void _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
 {
-	CharDetFP * fp = (CharDetFP *) rsrc->ptr;
+	if ( ! rsrc )
+		return;
+
+	if ( rsrc->ptr ) {
+		CharDetFP * fp = (CharDetFP *) rsrc->ptr;
+
+		if ( ! fp  )
+			return;
 
 #ifdef HAVE_MOZ_CHARDET
-	if ( fp->moz_status != 0 ) {
-		detect_destroy (&(fp->moz));
-		fp->moz_status = 0;
-	}
+		if ( fp->moz_status != 0 ) {
+			detect_destroy (&(fp->moz));
+			fp->moz_status = 0;
+		}
 #endif
 
 #ifdef HAVE_ICU_CHARDET
-	if ( fp->csd_status != 0 ) {
-		ucsdet_close (fp->csd);
-		fp->csd_status = 0;
-	}
+		if ( fp->csd_status != 0 ) {
+			ucsdet_close (fp->csd);
+			fp->csd_status = 0;
+		}
 #endif
 
 #ifdef HAVE_PY_CHARDET
-	fp->pMainModule = NULL;
-	fp->pMainDictionary = NULL;
+		fp->pMainModule = NULL;
+		fp->pMainDictionary = NULL;
 #endif
-
-	SAFE_EFREE(fp);
+	}
 }
 /* }}} */
 
@@ -180,7 +186,7 @@ static void _close_chardet_link (zend_resource * rsrc TSRMLS_DC)
  */
 PHP_MINIT_FUNCTION(chardet)
 {
-	le_chardet = zend_register_list_destructors_ex (NULL, _close_chardet_link, "Chardet link", module_number);
+	le_chardet = zend_register_list_destructors_ex (_close_chardet_link, NULL, "Chardet link", module_number);
 
 	REGISTER_CHARDET_CLASS(NULL);
 
@@ -287,12 +293,17 @@ PHP_FUNCTION(chardet_open)
 {
 	zval             * object = getThis ();
 	CharDetFP        * fp = NULL;
+	chardet_obj * obj;
 	zend_error_handling error_handling;
 #ifdef HAVE_ICU_CHARDET
 	UErrorCode status = U_ZERO_ERROR;
 #endif
 
 	CHARDET_REPLACE_ERROR_HANDLING;
+
+	if ( object ) {
+		obj = Z_CHARDET_P (object);
+	}
 
 	if ( (fp = (CharDetFP *) emalloc (sizeof (CharDetFP))) == NULL ) {
 		php_error_docref (NULL, E_ERROR, "handle memory allocation failed.");
@@ -348,13 +359,12 @@ PHP_FUNCTION(chardet_open)
 #endif
 
 	if ( object ) {
-		chardet_obj * obj;
-		obj = Z_CHARDET_P (object);
-		obj->u.fp = fp;
+		obj->fp = fp;
 	}
 
 	fp->rsrc = zend_register_resource (fp, le_chardet);
-	RETVAL_RES (fp->rsrc);
+	if ( ! object )
+		RETVAL_RES (fp->rsrc);
 
 	CHARDET_RESTORE_ERROR_HANDLING;
 }
@@ -371,15 +381,15 @@ PHP_FUNCTION(chardet_close)
 
 	if ( object ) {
 		obj = Z_CHARDET_P (object);
-		if ( ! obj->u.fp )
+		if ( !obj || ! obj->fp )
 			RETURN_TRUE;
-		zend_list_delete (obj->u.fp->rsrc);
+		zend_list_close (obj->fp->rsrc);
 	} else {
 		if ( zend_parse_parameters (ZEND_NUM_ARGS (), "r", &fp_link) == FAILURE )
 			return;
 
 		CHARDET_FETCH_RESOURCE (fp, CharDetFP *, fp_link, "Chardet link", le_chardet);
-		zend_list_delete (Z_RES_P (fp_link));
+		zend_list_close (Z_RES_P (fp_link));
 	}
 
 	RETURN_TRUE;
@@ -440,7 +450,7 @@ PHP_FUNCTION(chardet_detect)
 
 	if ( object ) {
 		Obj = Z_CHARDET_P (object);
-		fp = Obj->u.fp;
+		fp = Obj->fp;
 		if ( ! fp ) {
 			php_error_docref (NULL, E_WARNING, "No CHARDET object available");
 			CHARDET_RESTORE_ERROR_HANDLING;

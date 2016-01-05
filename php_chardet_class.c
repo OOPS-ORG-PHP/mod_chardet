@@ -26,27 +26,13 @@ static inline chardet_obj * chardet_fetch_object (zend_object * obj) {
 	return (chardet_obj *) ((char *) obj - XtOffsetOf(chardet_obj, std));
 }
 
-static int chardet_free_persistent (zend_resource * le, void * ptr) {
-	return le->ptr == ptr ? ZEND_HASH_APPLY_REMOVE : ZEND_HASH_APPLY_KEEP;
-}
-
 static void chardet_object_free_storage (zend_object * object) {
 	chardet_obj * intern = (chardet_obj *) chardet_fetch_object (object);
 
 	zend_object_std_dtor (&intern->std);
 
-	if ( intern->u.ptr ) {
-		if ( intern->u.fp->rsrc ) {
-			zend_list_delete (intern->u.fp->rsrc);
-			zend_hash_apply_with_argument (
-				&EG(persistent_list),
-				(apply_func_arg_t) chardet_free_persistent,
-				&intern->u.ptr
-			);
-		}
-	}
-
-	SAFE_EFREE (object);
+	if ( intern->fp->rsrc )
+		zend_list_close (intern->fp->rsrc);
 }
 
 static void chardet_object_new (zend_class_entry *class_type, zend_object_handlers *handlers, zend_object **retval TSRMLS_DC)
