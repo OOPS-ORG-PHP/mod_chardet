@@ -262,7 +262,7 @@ PHP_FUNCTION(chardet_version)
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_moz_version)
 {
-	RETURN_STRING (LIBCHARDET_VER);
+	RETURN_STRING (LIBCHARDET_VERSION);
 }
 /* }}} */
 #endif
