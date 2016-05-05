@@ -55,16 +55,15 @@ pythone에서 python-chardet(https://github.com/chardet/chardet/)을 사용할 �
         shell> python -c "import chardet; print chardet.__version__"
 
         위의 명령을 실행하여 에러가 없이 버전이 나온다면 이미 설치가 되어 있는 경우
-        이다. 2009.02 현재 1.0.1 이 최신 버전이다.
+        이다. 2016.05 현재 2.3.0 이 최신 버전이다.
 
         설치가 되어 있다면 ?번으로 건너뛴다.
 
      2) python-chardet 설치
 
-        get python-chardet from https://github.com/chardet/chardet/releases
-
-        shell> tar xvfpz chardet-1.0.1.tgz
-        shell> cd chardet-1.0.1
+        shell> curl -o chardet-2.3.0.tar.gz https://github.com/chardet/chardet/archive/2.3.0.tar.gz
+        shell> tar xvfpz chardet-2.3.0.tar.gz
+        shell> cd chardet-2.3.0
         shell> python ./setup.py build
         shell> python ./setup.py install
 
