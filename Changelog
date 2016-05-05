@@ -4,6 +4,9 @@ $Id$
 
 * 1.0.2
 --------------------------------------------------------------------------------
+Thu May  5 2016
+by JoungKyun.Kim <http://oops.org>
+	- support detect_handledata_r for binary safe problems (libchardet >= 1.0.5)
 
 
 * 1.0.1
