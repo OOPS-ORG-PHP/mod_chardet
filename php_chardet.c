@@ -239,6 +239,7 @@ PHP_MINFO_FUNCTION(chardet)
 	" library");
 	php_info_print_table_row(2, "URL", "http://oops.org/");
 	php_info_print_table_row(2, "Build version", CHARDET_VERSION);
+	php_info_print_table_row(2, "libchardet version", LIBCHARDET_VERSION);
 #ifdef HAVE_ICU_CHARDET
 	php_info_print_table_row(2, "ICU Library version", U_ICU_VERSION);
 #endif
