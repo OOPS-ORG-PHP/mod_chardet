@@ -128,17 +128,17 @@ void chardet_fp_free (CharDetFP **);
 short chardet_obj_init (CharDetObj **);
 void chardet_obj_free (CharDetObj **);
 #ifdef HAVE_MOZ_CHARDET
-short moz_chardet (CharDetFP *, const char *, CharDetObj **);
+short moz_chardet (CharDetFP *, zend_string *, CharDetObj **);
 #endif
 #ifdef HAVE_ICU_CHARDET
-short icu_chardet (CharDetFP *, const char *, CharDetObj **);
+short icu_chardet (CharDetFP *, zend_string *, CharDetObj **);
 #endif
 #ifdef HAVE_PY_CHARDET
-short py_chardet (CharDetFP *, const char *, CharDetObj **);
+short py_chardet (CharDetFP *, zend_string *, CharDetObj **);
 #endif
 
 #ifndef SAFE_EFREE
-#define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
+#define SAFE_EFREE(p) do { if(p) { efree(p); (p) = NULL; } } while(0)
 #endif
 
 #define CHARDET_FETCH_RESOURCE(a,b,c,d,e) \

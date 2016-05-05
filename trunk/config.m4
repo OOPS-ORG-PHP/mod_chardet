@@ -66,6 +66,11 @@ if test "$PHP_CHARDET" != "no"; then
 			AC_MSG_CHECKING(MOZ version)
 			AC_MSG_RESULT([$MOZ_VERSION])
 			AC_DEFINE(HAVE_MOZ_CHARDET,1,[Mozilla Chardet support])
+
+			OLD_LDFLAGS="${LDFLAGS}"
+			LDFLAGS="${MOZ_LIBS} ${LDFLAGS}"
+			AC_CHECK_LIB(chardet, detect_handledata_r, AC_DEFINE(ENABLE_DETECT_HANDLEDATA_R,1,[ENABLE DETCET_R API]), [])
+			LDFLAGS="${OLD_LDFLAGS}"
 		else
 			AC_MSG_NOTICE([Can't find. specify --enable-moz-chardet=/path/chardet-config])
 		fi

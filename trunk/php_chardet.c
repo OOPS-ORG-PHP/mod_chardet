@@ -412,7 +412,6 @@ PHP_FUNCTION(chardet_detect)
 	zend_string * buf;
 	CharDetFP   * fp;
 	CharDetObj  * obj    = NULL;
-	const char  * string = NULL;
 #ifdef HAVE_MOZ_CHARDET
 	zend_long     type = CHARDET_MOZ;
 #else
@@ -459,8 +458,6 @@ PHP_FUNCTION(chardet_detect)
 	} else
 		CHARDET_FETCH_RESOURCE (fp, CharDetFP *, fp_link, "Chardet link", le_chardet);
 
-	string = (const char *) ZSTR_VAL (buf);
-
 	if ( chardet_obj_init (&obj) < 0 ) {
 		php_error_docref (NULL, E_ERROR, "Structure initialize failed on chardet ()");
 		CHARDET_RESTORE_ERROR_HANDLING;
@@ -470,7 +467,7 @@ PHP_FUNCTION(chardet_detect)
 	switch (type) {
 		case CASE_CHARDET_MOZ :
 #ifdef HAVE_MOZ_CHARDET
-			r = moz_chardet (fp, string , &obj);
+			r = moz_chardet (fp, buf, &obj);
 #else
 			chardet_obj_free (&obj);
 			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-mod-chardet option");
@@ -480,7 +477,7 @@ PHP_FUNCTION(chardet_detect)
 			break;
 		case CASE_CHARDET_ICU :
 #ifdef HAVE_ICU_CHARDET
-			r = icu_chardet (fp, string , &obj);
+			r = icu_chardet (fp, buf, &obj);
 #else
 			chardet_obj_free (&obj);
 			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-icu-chardet option");
@@ -490,7 +487,7 @@ PHP_FUNCTION(chardet_detect)
 			break;
 		case CASE_CHARDET_PY :
 #ifdef HAVE_PY_CHARDET
-			r = py_chardet (fp, string, &obj);
+			r = py_chardet (fp, buf, &obj);
 #else
 			chardet_obj_free (&obj);
 			php_error_docref (NULL, E_ERROR, "Unsupport this rumtimes. Build with --enable-py-chardet option");
@@ -559,8 +556,8 @@ void chardet_obj_free (CharDetObj ** obj) {
 // }}}
 
 #ifdef HAVE_MOZ_CHARDET
-// {{{ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
-short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
+// {{{ short moz_chardet (CharDetFP * fp, zend_string * buf, CharDetObj ** obj)
+short moz_chardet (CharDetFP * fp, zend_string * buf, CharDetObj ** obj) {
 	DetectObj * mo;
 	short       r;
 
@@ -571,7 +568,11 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	}
 
 	detect_reset (&(fp->moz));
-	r = detect_handledata (&(fp->moz), buf, &mo);
+#ifdef ENABLE_DETECT_HANDLEDATA_R
+	r = detect_handledata_r (&(fp->moz), ZSTR_VAL (buf), ZSTR_LEN (buf), &mo);
+#else
+	r = detect_handledata (&(fp->moz), ZSTR_VAL (buf), &mo);
+#endif
 	(*obj)->status = r;
 
 	if ( r == CHARDET_OUT_OF_MEMORY )
@@ -592,12 +593,12 @@ short moz_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 #ifdef HAVE_ICU_CHARDET
 // {{{ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
-short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
+short icu_chardet (CharDetFP * fp, zend_string * buf, CharDetObj ** obj) {
 	const UCharsetMatch * ucm;
 	UErrorCode            status = U_ZERO_ERROR;
 	CharDetObj          * ret;
 
-	ucsdet_setText(fp->csd, buf, strlen (buf), &status);
+	ucsdet_setText(fp->csd, ZSTR_VAL (buf), ZSTR_LEN (buf), &status);
 	(*obj)->status = status;
 
 	if ( status != U_ZERO_ERROR )
@@ -620,7 +621,7 @@ short icu_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 
 #ifdef HAVE_PY_CHARDET
 // {{{ short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj)
-short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
+short py_chardet (CharDetFP * fp, zend_string * buf, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
 	char     * pytmp = NULL;
@@ -628,13 +629,13 @@ short py_chardet (CharDetFP * fp, const char * buf, CharDetObj ** obj) {
 	size_t     buflen;
 	Py_ssize_t pos = 0;
 
-	if ( buf == NULL ) {
+	if ( ! buf ) {
 		(*obj)->status = PY_BUFNULL;
 		return -1;
 	}
 
-	buflen = strlen (buf);
-	pytmp = (char *) buf;
+	buflen = ZSTR_LEN (buf);
+	pytmp = (char *) ZSTR_VAL (buf);
 
 	/*
 	 * replace python conflict charactors
