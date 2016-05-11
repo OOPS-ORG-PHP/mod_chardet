@@ -13,19 +13,24 @@ const zend_function_entry chardet_methods_exception[] = {
 
 /* Exception declear {{{
  */
-#if defined(HAVE_SPL)
+#if PHP_MAJOR_VERSION >= 5
+#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
 extern PHPAPI zend_class_entry *spl_ce_RuntimeException;
 extern PHPAPI zend_class_entry *spl_ce_Countable;
 #endif
 
 #define CHARDET_REPLACE_ERROR_HANDLING \
 	zend_replace_error_handling ( \
-		EH_THROW, \
+		object ? EH_THROW : EH_NORMAL, \
 		chardet_ce_exception, \
-		&error_handling \
+		&error_handling TSRMLS_CC \
 	)
 
-#define CHARDET_RESTORE_ERROR_HANDLING zend_restore_error_handling (&error_handling)
+#define CHARDET_RESTORE_ERROR_HANDLING zend_restore_error_handling (&error_handling TSRMLS_CC)
+#else
+#define CHARDET_REPLACE_ERROR_HANDLIN0 int chardet_error_dummy_handing = 1
+#define CHARDET_RESTORE_ERROR_HANDLING chardet_error_dummy_handing = 0
+#endif
 /* }}} */
 
 /* {{{ chardet_deps[]
@@ -33,7 +38,7 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
  * CHARDET dependancies
  */
 const zend_module_dep chardet_deps[] = {
-#if defined(HAVE_SPL)
+#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
 	ZEND_MOD_REQUIRED("spl")
 #endif
 	{NULL, NULL, NULL}
@@ -52,20 +57,20 @@ const zend_function_entry chardet_methods[] = {
 	zend_class_entry ce; \
 	INIT_CLASS_ENTRY (ce, "CHARDET", chardet_methods); \
 	ce.create_object = chardet_object_new_main; \
-	chardet_ce = zend_register_internal_class_ex (&ce, parent); \
+	chardet_ce = zend_register_internal_class_ex (&ce, parent, NULL TSRMLS_CC); \
 	memcpy(&chardet_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers)); \
 	chardet_object_handlers.clone_obj = NULL; \
-	chardet_ce->ce_flags |= ZEND_ACC_FINAL; \
+	chardet_ce->ce_flags |= ZEND_ACC_FINAL_CLASS; \
 }
 
 #define REGISTER_CHARDET_PER_CLASS(name, c_name, parent) { \
 	zend_class_entry ce; \
 	INIT_CLASS_ENTRY(ce, "CHARDET" # name, chardet_methods_ ## c_name); \
 	ce.create_object = chardet_object_new_ ## c_name; \
-	chardet_ce_ ## c_name = zend_register_internal_class_ex(&ce, parent); \
+	chardet_ce_ ## c_name = zend_register_internal_class_ex(&ce, parent, NULL TSRMLS_CC); \
 	memcpy(&chardet_object_handlers_ ## c_name, zend_get_std_object_handlers(), sizeof(zend_object_handlers)); \
 	chardet_object_handlers_ ## c_name.clone_obj = NULL; \
-	chardet_ce_ ## c_name->ce_flags |= ZEND_ACC_FINAL; \
+	chardet_ce_ ## c_name->ce_flags |= ZEND_ACC_FINAL_CLASS; \
 }
 
 zend_class_entry * chardet_ce;
@@ -74,8 +79,11 @@ static zend_object_handlers chardet_object_handlers;
 static zend_object_handlers chardet_object_handlers_exception;
 
 typedef struct _chardet_object {
-	CharDetFP * fp;
-	zend_object std;
+	zend_object     std;
+	union {
+		CharDetFP * fp;
+		void      * ptr;
+	} u;
 } chardet_obj;
 /* For Class declears }}} */
 

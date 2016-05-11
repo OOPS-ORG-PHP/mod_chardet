@@ -2,14 +2,14 @@
  * Project: mod_chardet :: Character set detect API
  * File:    mod_chardet_class.c
  *
- * Copyright (c) 2015 JoungKyun.Kim
+ * Copyright (c) 2012 JoungKyun.Kim
  *
  * LICENSE: MPL or GPL
  *
  * @category    Charset
  * @package     mod_chardet
  * @author      JoungKyun.Kim <http://oops.org>
- * @copyright   2015 OOPS.org
+ * @copyright   2012 OOPS.org
  * @license     MPL or GPL
  * @version     SVN: $Id$
  * @since       File available since release 0.0.1
@@ -20,44 +20,56 @@
  */
 
 /* {{{ Class API */
-#define Z_CHARDET_P(zv) chardet_fetch_object(Z_OBJ_P(zv))
-
-static inline chardet_obj * chardet_fetch_object (zend_object * obj) {
-	return (chardet_obj *) ((char *) obj - XtOffsetOf(chardet_obj, std));
+static int chardet_free_persistent (zend_rsrc_list_entry * le, void * ptr TSRMLS_DC) {
+	return le->ptr == ptr ? ZEND_HASH_APPLY_REMOVE : ZEND_HASH_APPLY_KEEP;
 }
 
-static void chardet_object_free_storage (zend_object * object) {
-	chardet_obj * intern = (chardet_obj *) chardet_fetch_object (object);
+static void chardet_object_free_storage (void * object TSRMLS_DC) {
+	chardet_obj * intern = (chardet_obj *) object;
 
-	zend_object_std_dtor (&intern->std);
+	zend_object_std_dtor (&intern->std TSRMLS_CC);
 
-	if ( intern->fp->rsrc )
-		zend_list_close (intern->fp->rsrc);
+	if ( intern->u.ptr ) {
+		if ( intern->u.fp->rsrc ) {
+			zend_list_delete (intern->u.fp->rsrc);
+			zend_hash_apply_with_argument (
+				&EG(persistent_list),
+				(apply_func_arg_t) chardet_free_persistent,
+				&intern->u.ptr TSRMLS_CC
+			);
+		}
+	}
+
+	efree(object);
 }
 
-static void chardet_object_new (zend_class_entry *class_type, zend_object_handlers *handlers, zend_object **retval TSRMLS_DC)
+static void chardet_object_new (zend_class_entry *class_type, zend_object_handlers *handlers, zend_object_value *retval TSRMLS_DC)
 {
 	chardet_obj * intern;
 	zval  * tmp;
 
-	intern = ecalloc (1, sizeof (chardet_obj) + zend_object_properties_size (class_type));
-	zend_object_std_init (&intern->std,class_type TSRMLS_CC);
-	handlers->offset = XtOffsetOf(chardet_obj, std);
-	handlers->free_obj = (zend_object_free_obj_t) chardet_object_free_storage;
-	intern->std.handlers = handlers;
+	intern = emalloc (sizeof (chardet_obj));
+	memset (intern, 0, sizeof (chardet_obj));
 
-	*retval = &intern->std;
+	zend_object_std_init (&intern->std, class_type TSRMLS_CC);
+	retval->handle = zend_objects_store_put(
+		intern,
+		(zend_objects_store_dtor_t) zend_objects_destroy_object,
+		(zend_objects_free_object_storage_t) chardet_object_free_storage,
+		NULL TSRMLS_CC
+	);
+	retval->handlers = handlers;
 }
 
-static zend_object * chardet_object_new_main (zend_class_entry * class_type TSRMLS_DC) {
-	zend_object * retval;
+static zend_object_value chardet_object_new_main (zend_class_entry * class_type TSRMLS_DC) {
+	zend_object_value retval;
 
 	chardet_object_new (class_type, &chardet_object_handlers, &retval TSRMLS_CC);
 	return retval;
 }
 
-static zend_object * chardet_object_new_exception (zend_class_entry * class_type TSRMLS_DC) {
-	zend_object * retval;
+static zend_object_value chardet_object_new_exception (zend_class_entry * class_type TSRMLS_DC) {
+	zend_object_value retval;
 
 	chardet_object_new (class_type, &chardet_object_handlers_exception, &retval TSRMLS_CC);
 	return retval;

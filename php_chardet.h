@@ -67,8 +67,6 @@ PHP_FUNCTION(chardet_close);
 #define phpext_chardet_ptr chardet_module_ptr
 
 typedef struct CharDet_FP {
-	// for Class
-	zend_resource * rsrc;
 #ifdef HAVE_MOZ_CHARDET
 	Detect *moz;
 	short moz_status;
@@ -81,6 +79,7 @@ typedef struct CharDet_FP {
 	PyObject * pMainDictionary;
 	PyObject * pMainModule;
 #endif
+	int rsrc;
 } CharDetFP;
 
 #ifndef HAVE_ICU_CHARDET
@@ -128,22 +127,18 @@ void chardet_fp_free (CharDetFP **);
 short chardet_obj_init (CharDetObj **);
 void chardet_obj_free (CharDetObj **);
 #ifdef HAVE_MOZ_CHARDET
-short moz_chardet (CharDetFP *, zend_string *, CharDetObj **);
+short moz_chardet (CharDetFP *, const char *, size_t, CharDetObj **);
 #endif
 #ifdef HAVE_ICU_CHARDET
-short icu_chardet (CharDetFP *, zend_string *, CharDetObj **);
+short icu_chardet (CharDetFP *, const char *, size_t, CharDetObj **);
 #endif
 #ifdef HAVE_PY_CHARDET
-short py_chardet (CharDetFP *, zend_string *, CharDetObj **);
+short py_chardet (CharDetFP *, const char *, size_t, CharDetObj **);
 #endif
 
 #ifndef SAFE_EFREE
-#define SAFE_EFREE(p) do { if(p) { efree(p); (p) = NULL; } } while(0)
+#define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
 #endif
-
-#define CHARDET_FETCH_RESOURCE(a,b,c,d,e) \
-	if ( (a = (b) zend_fetch_resource_ex (c, d, e)) == NULL ) \
-		RETURN_FALSE
 
 #endif	/* PHP_CHARDET_H */
 
