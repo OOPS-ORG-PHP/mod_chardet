@@ -1,0 +1,23 @@
+*chardet_icu_version* -- Returns version of ICU Library
+
+  (string) chardet_icu_version (void)~
+
+|chardet_icu_version| 함수는 libchardet에 link된 ICU library의 버전을
+반환한다.
+
+다음은 |chardet_icu_version| 함수의 출력 결과를 보여준다.
+
+<?php >
+  echo "The version of ICU Library is ";
+  echo chardet_icu_version () . ".\n";
+?>
+
+위의 예제의 결과는 다음과 같다:
+
+  The version of ICU Library is 4.2.1
+
+
+|chardet_open| |chardet_close| |chardet_detect|
+
+
+vim:ft=help:
