@@ -37,7 +37,7 @@ For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_
 
 ## Installation
 
-### Requires
+### 1. Requires
 
  * mod_charset versions
    * PHP 7 and after : mod_charset >= 1.0.0
@@ -48,7 +48,7 @@ For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_
  * [python-chardet](https://pypi.python.org/pypi/chardet) (optional)
 
 
-### build
+### 2. Build
 
 First, check libraries about [libchardet](https://github.com/joubgkyun/libchardet), [libicu](http://site.icu-project.org/) and [python-chardet](https://pypi.python.org/pypi/chardet).
 
@@ -68,7 +68,7 @@ The function of [python-chardet](https://pypi.python.org/pypi/chardet) is for ch
 [root@host mod_chardet]$ make && make install
 ```
 
-### configurations
+### 3. Configurations
 
 add DSO extension config to your php.ini
 
