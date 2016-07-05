@@ -25,7 +25,7 @@ mod_chardet extension supports three method for detecting charset. Supporting me
 
 For CJKV(Chinese, Japanese, Korean, Vitenams) languages, recommended to use MUCD(Mozilla Universal Charset Detect). This method is best. And, about single byte languages, MUCD and ICU all best. 
 
-In the case of python-charde mode, even use the MUCD. However, the call performance is very not good. The mode is support for test, so when if you don't give configure options, this mode does not work basically. 
+In the case of python-chardet mode, even use the MUCD. However, the call performance is very not good. The mode is support for test, so when if you don't give configure options, this mode does not work basically. 
 
 For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_chardet/blob/master/Reference) document.
 
