@@ -52,7 +52,9 @@ For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_
 
 First, check libraries about [libchardet](https://github.com/joubgkyun/libchardet), [libicu](http://site.icu-project.org/) and [python-chardet](https://pypi.python.org/pypi/chardet).
 
-You must install one of [libchardet](https://github.com/joubgkyun/libchardet) or [libicu](http://site.icu-project.org/) and [python-chardet](https://pypi.python.org/pypi/chardet).
+You must install one of [libchardet](https://github.com/joubgkyun/libchardet) or [libicu](http://site.icu-project.org/).
+
+The function of [python-chardet](https://pypi.python.org/pypi/chardet) is for checking result with [python-chardet](https://pypi.python.org/pypi/chardet). The performance of this feature is not very good and we don't recommand to use this feature.
 
 ```bash
 [root@host mod_chardet]$ phpize
