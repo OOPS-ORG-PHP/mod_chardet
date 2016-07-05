@@ -1,84 +1,81 @@
 mod_chardet php extension
+====
 
-작성: 김정균 <http://oops.org>
-$Id$
+## License
 
-* 개요
+Copyright &copy; 2016 JoungKyun.Kim and all right reserved.
 
-mod_chardet 확장은 문자열의 문자셋을 탐지하는 기능을 제공한다. 이 모듈은 Mozilla
-Universal Charset Detect 라이브러리와 IBM이 주도하는 ICU-project의 Conversion 에
-포함된 Charset Detection(http://icu-project.org/userguide/charsetDetection.html)
-library 를 기반으로 한다. 설치시에, --enable-py-chardet 옵션을 줄 경우, 시스템의
-pythone에서 python-chardet(https://github.com/chardet/chardet/)을 사용할 수 있을
-경우 Python C API를 이용하여 이 결과 값을 이 확장의 function 에서 가져올 수 있다.
-(system 함수를 이용하는 것이 아니다.)
+This program is under MPL 1.1 or GPL v2
+
+## Abstract
+
+Determine the charset of the input data with [Mozilla Universal Charset Detection C/C++ library](http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/)
+
+This is php extension that is [libchardet](https://github.com/joubgkyun/libchardet) PHP frontend.
+
+[libchardet](https://github.com/joubgkyun/libchardet) is based on [Mozilla Universal Charset Detection C/C++ library](http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/) and, detects the character set used to encode data.
+
+This module is a c-binding, is much faster than the other chardet packages taht is made by PHP code.
+
+mod_chardet extension supports three method for detecting charset. Supporting method and required library is as follow:
+
+ * libchardet - Mozilla Universal Charset Detect C/C++ library
+ * ICU - IBM International Components for Unicode
+ * python-chardet - Mozilla Universal Charset Detect with pure python
+
+For CJKV(Chinese, Japanese, Korean, Vitenams) languages, recommended to use MUCD(Mozilla Universal Charset Detect). This method is best. And, about single byte languages, MUCD and ICU all best. 
+
+In the case of python-charde mode, even use the MUCD. However, the call performance is very not good. The mode is support for test, so when if you don't give configure options, this mode does not work basically. 
+
+For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_chardet/blob/master/Reference) document.
+
+## Downloads
+ * https://github.com/OOPS-ORG-PHP/mod_chardet/releases
+ * Inforamtion of latest version
+  * For PHP 7 and after: [1.0.2](https://github.com/OOPS-ORG-PHP/mod_chardet/releases/tag/1.0.2)
+  * For PHP 5 and before: [0.0.5](https://github.com/OOPS-ORG-PHP/mod_chardet/releases/tag/0.0.5)
+
+## Installation
+
+### Requires
+
+ * mod_charset versions
+   * PHP 7 and after : mod_charset >= 1.0.0
+   * PHP 5 ans before : mod_charset < 1.0.0
+ * PHP >= 4.1
+ * [libchardet](https://github.com/joubgkyun/libchardet) >= 1.0.5
+ * [libicu](http://site.icu-project.org/) (optional)
+ * [python-chardet](https://pypi.python.org/pypi/chardet) (optional)
 
 
-* 요구 조건
-  1. Mozilla Universal Charset Detect library
-     ftp://mirror.oops.org/pub/oops/libchardet/libchardet-version.tar.bz2
+### build
 
-     rpm 을 사용하는 배포본에서는 다음의 명령으로 rpm 을 만들어 사용할 수 있다.
-     rpmbuild -ta libchardet-version.tar.bz2
+First, check libraries about [libchardet](https://github.com/joubgkyun/libchardet), [libicu](http://site.icu-project.org/) and [python-chardet](https://pypi.python.org/pypi/chardet).
 
-     chardet_detect 시에 CHARDET_MOZ 옵션으로 사용할 수 있다.
-     CHARDET_MOZ 의 값이 -1 일 경우에 이 모드는 지원하지 않는다.
+You must install one of [libchardet](https://github.com/joubgkyun/libchardet) or [libicu](http://site.icu-project.org/) and [python-chardet](https://pypi.python.org/pypi/chardet).
 
-  2. libicu library
-     RHEL/CentOS 에서는 yum install libicu-devel 명령으로 간단히 설치가
-     가능하다.
+```bash
+[root@host mod_chardet]$ phpize
+[root@host mod_chardet]$ ./configure --help
+  ...
+  --enable-moz-chardet    Support Mozilla chardet [default=yes]
+  --enable-icu-chardet    Support ICU chardet [default=yes]
+  --enable-py-chardet     Support python chardet [default=no]
+  ...
+[root@host mod_chardet]$ ./configure
+[root@host mod_chardet]$ make && make install
+```
 
-     chardet_detect 시에 CHARDET_ICU 옵션으로 사용할 수 있다.
-     CHARDET_ICU 의 값이 -1 일 경우에 이 모드는 지원하지 않는다.
+### configurations
 
-  mod_charset은 Mozilla Universal Chardet 또는 libicu library 둘 중에 하나만 만족
-  할 경우 빌드가 된다. 둘다 설치가 되었을 경우 Mozilla Universal Chardet이 기본값
-  이 되며, Mozilla Universal Chardet이 설치되어 있지 않을 경우 ICU 가 기본값이 된
-  다.
+add DSO extension config to your php.ini
 
-  3. python-chardet
-     이 기능은 빌드 시에 --enable-py-chardet 옵션을 주는 것으로 사용을 할 수 있다.
-     --enable-py-chardet 옵션은 기본옵션이 아니고 지정을 해 주어야 반영이 된다.
+```ini
+extension = chardet.so
+```
 
-     이 기능은 시스템에 python-chardet 이 설치 되어 있을 경우, 지원하는 기능으로,
-     CHARDET_MOZ 와의 결과값 비교(동일 알고리즘)및 디버깅을 위해서 지원을 한다.
+### Usages
 
-     특히 이 기능의 경우 Python C API를 이용하여 python code를 호출하는 방식이기
-     때문에 성능이 매우 좋지 않기 때문에 서비스 용으로는 사용하기는 힘들다.
-
-     즉, 일반 사용자들은 이 기능에 대한 관심을 끄도록 한다.
-
-     이 기능을 사용하기 위해서는 다음의 과정과 확인을 거치도록 한다.
-
-     1) python-chardet 지원 여부 확인
-
-        shell> python -c "import chardet; print chardet.__version__"
-
-        위의 명령을 실행하여 에러가 없이 버전이 나온다면 이미 설치가 되어 있는 경우
-        이다. 2016.05 현재 2.3.0 이 최신 버전이다.
-
-        설치가 되어 있다면 ?번으로 건너뛴다.
-
-     2) python-chardet 설치
-
-        shell> curl -o chardet-2.3.0.tar.gz https://github.com/chardet/chardet/archive/2.3.0.tar.gz
-        shell> tar xvfpz chardet-2.3.0.tar.gz
-        shell> cd chardet-2.3.0
-        shell> python ./setup.py build
-        shell> python ./setup.py install
-
-        CHARDET_PY 의 값이 -1 일 경우 이 기능은 지원하지 않는 것이며, 지원 시에
-        chardet_detect 함수에 CHARDET_PY MODE 로 호출을 할 수 가 있다.
-
-* 설치
-
-shell> phpize
-shell> ./configure
-       Python chardet 기능을 지원하려면 --enable-py-chardet 옵션을 주도록 한다.
-       일반 사용자라면 이 기능에 대한 관심을 가지지 말기 바란다.
-shell> make
-shell> cp -af modules/chardet.so $PHP_SHARED_EXTENSION_DIR/chardet.so
-
-* 예제
-
-이 파일과 함께 있는 test.php 를 참조한다.
+See also sample script of repository.
+ * https://github.com/OOPS-ORG-PHP/mod_chardet/blob/master/sample.php
+ * https://github.com/OOPS-ORG-PHP/mod_chardet/blob/master/sample-oop.php
