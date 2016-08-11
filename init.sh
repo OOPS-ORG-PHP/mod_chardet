@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id$
 
 if [ -f Makefile ]; then
 	make distclean
