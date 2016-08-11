@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?
+<?php
 if ( ! extension_loaded ('chardet') ) {
 	if ( PHP_VERSION_ID > 50399 ) {
 		fprintf (STDERR, "Chardet module not loaded!\n");
