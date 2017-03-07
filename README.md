@@ -39,9 +39,9 @@ For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_
 
 ### 1. Requires
 
- * mod_charset versions
-   * PHP 7 and after : mod_charset >= 1.0.0
-   * PHP 5 ans before : mod_charset < 1.0.0
+ * mod_chardet versions
+   * PHP 7 and after : mod_chardet >= 1.0.0
+   * PHP 5 ans before : mod_chardet < 1.0.0
  * PHP >= 4.1
  * [libchardet](https://github.com/joubgkyun/libchardet) >= 1.0.5
  * [libicu](http://site.icu-project.org/) (optional)

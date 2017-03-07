@@ -9,7 +9,7 @@ Copyright &copy; 2016 JoungKyun.Kim and all right reserved.
 
 ## 개요
 
-mod_charset 확장은 [Mozilla Universal Charset Detection C/C++ library](http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/) 알고리즘을 이용하여 입력된 데이터의 문자셋을 결정 합니다.
+mod_chardet 확장은 [Mozilla Universal Charset Detection C/C++ library](http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/) 알고리즘을 이용하여 입력된 데이터의 문자셋을 결정 합니다.
 
 이 확장 프로그램은 [libchardet](https://github.com/joubgkyun/libchardet)의 PHP frontend 입니다.
 
@@ -18,7 +18,7 @@ mod_charset 확장은 [Mozilla Universal Charset Detection C/C++ library](http:/
 이 확장 프로그램은 C-binding으로 제작이 되어, PHP code로 작성된 다른 chardet 패키지들 보다 훨씬 빠르고 정확한 탐지를 합니다.
 
 mod_chardet extension supports three method for detecting charset. Supporting method and required library is as follow:
-mod_charset 확장은 문자셋을 탐지하기 위하여 3가지 알고리즘을 사용할 수 있습니다. 이 3가지 알고리즘은 다음의 library에 의해서 지원이 됩니다.
+mod_chardet 확장은 문자셋을 탐지하기 위하여 3가지 알고리즘을 사용할 수 있습니다. 이 3가지 알고리즘은 다음의 library에 의해서 지원이 됩니다.
 
  * libchardet - Mozilla Universal Charset Detect C/C++ library
  * ICU - IBM International Components for Unicode
@@ -41,9 +41,9 @@ python-chardet 모드는 python chardet 모듈의 결과와 비교를 하기 위
 
 ### 1. 요구사항
 
- * mod_charset 버전
-   * PHP 7 and after : mod_charset >= 1.0.0
-   * PHP 5 ans before : mod_charset < 1.0.0
+ * mod_chardet 버전
+   * PHP 7 and after : mod_chardet >= 1.0.0
+   * PHP 5 ans before : mod_chardet < 1.0.0
  * PHP >= 4.1
  * [libchardet](https://github.com/joubgkyun/libchardet) >= 1.0.5
  * [libicu](http://site.icu-project.org/) (optional)
