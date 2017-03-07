@@ -1,65 +1,65 @@
 mod_chardet php extension
 
-ÀÛ¼º: ±èÁ¤±Õ <http://oops.org>
+ì‘ì„±: ê¹€ì •ê·  <http://oops.org>
 $Id$
 
-* °³¿ä
+* ê°œìš”
 
-mod_chardet È®ÀåÀº ¹®ÀÚ¿­ÀÇ ¹®ÀÚ¼ÂÀ» Å½ÁöÇÏ´Â ±â´ÉÀ» Á¦°øÇÑ´Ù. ÀÌ ¸ğµâÀº Mozilla
-Universal Charset Detect ¶óÀÌºê·¯¸®¿Í IBMÀÌ ÁÖµµÇÏ´Â ICU-projectÀÇ Conversion ¿¡
-Æ÷ÇÔµÈ Charset Detection(http://icu-project.org/userguide/charsetDetection.html)
-library ¸¦ ±â¹İÀ¸·Î ÇÑ´Ù. ¼³Ä¡½Ã¿¡, --enable-py-chardet ¿É¼ÇÀ» ÁÙ °æ¿ì, ½Ã½ºÅÛÀÇ
-pythone¿¡¼­ python-chardet(http://chardet.feedparser.org/)À» »ç¿ëÇÒ ¼ö ÀÖÀ» °æ¿ì
-Python C API¸¦ ÀÌ¿ëÇÏ¿© ÀÌ °á°ú °ªÀ» ÀÌ È®ÀåÀÇ function ¿¡¼­ °¡Á®¿Ã ¼ö ÀÖ´Ù.
-(system ÇÔ¼ö¸¦ ÀÌ¿ëÇÏ´Â °ÍÀÌ ¾Æ´Ï´Ù.)
+mod_chardet í™•ì¥ì€ ë¬¸ìì—´ì˜ ë¬¸ìì…‹ì„ íƒì§€í•˜ëŠ” ê¸°ëŠ¥ì„ ì œê³µí•œë‹¤. ì´ ëª¨ë“ˆì€ Mozilla
+Universal Charset Detect ë¼ì´ë¸ŒëŸ¬ë¦¬ì™€ IBMì´ ì£¼ë„í•˜ëŠ” ICU-projectì˜ Conversion ì—
+í¬í•¨ëœ Charset Detection(http://icu-project.org/userguide/charsetDetection.html)
+library ë¥¼ ê¸°ë°˜ìœ¼ë¡œ í•œë‹¤. ì„¤ì¹˜ì‹œì—, --enable-py-chardet ì˜µì…˜ì„ ì¤„ ê²½ìš°, ì‹œìŠ¤í…œì˜
+pythoneì—ì„œ python-chardet(http://chardet.feedparser.org/)ì„ ì‚¬ìš©í•  ìˆ˜ ìˆì„ ê²½ìš°
+Python C APIë¥¼ ì´ìš©í•˜ì—¬ ì´ ê²°ê³¼ ê°’ì„ ì´ í™•ì¥ì˜ function ì—ì„œ ê°€ì ¸ì˜¬ ìˆ˜ ìˆë‹¤.
+(system í•¨ìˆ˜ë¥¼ ì´ìš©í•˜ëŠ” ê²ƒì´ ì•„ë‹ˆë‹¤.)
 
 
-* ¿ä±¸ Á¶°Ç
+* ìš”êµ¬ ì¡°ê±´
   1. Mozilla Universal Charset Detect library
      ftp://mirror.oops.org/pub/oops/libchardet-version.tar.bz2
 
-     rpm À» »ç¿ëÇÏ´Â ¹èÆ÷º»¿¡¼­´Â ´ÙÀ½ÀÇ ¸í·ÉÀ¸·Î rpm À» ¸¸µé¾î »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+     rpm ì„ ì‚¬ìš©í•˜ëŠ” ë°°í¬ë³¸ì—ì„œëŠ” ë‹¤ìŒì˜ ëª…ë ¹ìœ¼ë¡œ rpm ì„ ë§Œë“¤ì–´ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
      rpmbuild -ta libchardet-version.tar.bz2
 
-     chardet_detect ½Ã¿¡ CHARDET_MOZ ¿É¼ÇÀ¸·Î »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-     CHARDET_MOZ ÀÇ °ªÀÌ -1 ÀÏ °æ¿ì¿¡ ÀÌ ¸ğµå´Â Áö¿øÇÏÁö ¾Ê´Â´Ù.
+     chardet_detect ì‹œì— CHARDET_MOZ ì˜µì…˜ìœ¼ë¡œ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
+     CHARDET_MOZ ì˜ ê°’ì´ -1 ì¼ ê²½ìš°ì— ì´ ëª¨ë“œëŠ” ì§€ì›í•˜ì§€ ì•ŠëŠ”ë‹¤.
 
   2. libicu library
-     RHEL/CentOS ¿¡¼­´Â yum install libicu-devel ¸í·ÉÀ¸·Î °£´ÜÈ÷ ¼³Ä¡°¡
-     °¡´ÉÇÏ´Ù.
+     RHEL/CentOS ì—ì„œëŠ” yum install libicu-devel ëª…ë ¹ìœ¼ë¡œ ê°„ë‹¨íˆ ì„¤ì¹˜ê°€
+     ê°€ëŠ¥í•˜ë‹¤.
 
-     chardet_detect ½Ã¿¡ CHARDET_ICU ¿É¼ÇÀ¸·Î »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-     CHARDET_ICU ÀÇ °ªÀÌ -1 ÀÏ °æ¿ì¿¡ ÀÌ ¸ğµå´Â Áö¿øÇÏÁö ¾Ê´Â´Ù.
+     chardet_detect ì‹œì— CHARDET_ICU ì˜µì…˜ìœ¼ë¡œ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
+     CHARDET_ICU ì˜ ê°’ì´ -1 ì¼ ê²½ìš°ì— ì´ ëª¨ë“œëŠ” ì§€ì›í•˜ì§€ ì•ŠëŠ”ë‹¤.
 
-  mod_chardetÀº Mozilla Universal Chardet ¶Ç´Â libicu library µÑ Áß¿¡ ÇÏ³ª¸¸ ¸¸Á·
-  ÇÒ °æ¿ì ºôµå°¡ µÈ´Ù. µÑ´Ù ¼³Ä¡°¡ µÇ¾úÀ» °æ¿ì Mozilla Universal ChardetÀÌ ±âº»°ª
-  ÀÌ µÇ¸ç, Mozilla Universal ChardetÀÌ ¼³Ä¡µÇ¾î ÀÖÁö ¾ÊÀ» °æ¿ì ICU °¡ ±âº»°ªÀÌ µÈ
-  ´Ù.
+  mod_chardetì€ Mozilla Universal Chardet ë˜ëŠ” libicu library ë‘˜ ì¤‘ì— í•˜ë‚˜ë§Œ ë§Œì¡±
+  í•  ê²½ìš° ë¹Œë“œê°€ ëœë‹¤. ë‘˜ë‹¤ ì„¤ì¹˜ê°€ ë˜ì—ˆì„ ê²½ìš° Mozilla Universal Chardetì´ ê¸°ë³¸ê°’
+  ì´ ë˜ë©°, Mozilla Universal Chardetì´ ì„¤ì¹˜ë˜ì–´ ìˆì§€ ì•Šì„ ê²½ìš° ICU ê°€ ê¸°ë³¸ê°’ì´ ëœ
+  ë‹¤.
 
   3. python-chardet
-     ÀÌ ±â´ÉÀº ºôµå ½Ã¿¡ --enable-py-chardet ¿É¼ÇÀ» ÁÖ´Â °ÍÀ¸·Î »ç¿ëÀ» ÇÒ ¼ö ÀÖ´Ù.
-     --enable-py-chardet ¿É¼ÇÀº ±âº»¿É¼ÇÀÌ ¾Æ´Ï°í ÁöÁ¤À» ÇØ ÁÖ¾î¾ß ¹İ¿µÀÌ µÈ´Ù.
+     ì´ ê¸°ëŠ¥ì€ ë¹Œë“œ ì‹œì— --enable-py-chardet ì˜µì…˜ì„ ì£¼ëŠ” ê²ƒìœ¼ë¡œ ì‚¬ìš©ì„ í•  ìˆ˜ ìˆë‹¤.
+     --enable-py-chardet ì˜µì…˜ì€ ê¸°ë³¸ì˜µì…˜ì´ ì•„ë‹ˆê³  ì§€ì •ì„ í•´ ì£¼ì–´ì•¼ ë°˜ì˜ì´ ëœë‹¤.
 
-     ÀÌ ±â´ÉÀº ½Ã½ºÅÛ¿¡ python-chardet ÀÌ ¼³Ä¡ µÇ¾î ÀÖÀ» °æ¿ì, Áö¿øÇÏ´Â ±â´ÉÀ¸·Î,
-     CHARDET_MOZ ¿ÍÀÇ °á°ú°ª ºñ±³(µ¿ÀÏ ¾Ë°í¸®Áò)¹× µğ¹ö±ëÀ» À§ÇØ¼­ Áö¿øÀ» ÇÑ´Ù.
+     ì´ ê¸°ëŠ¥ì€ ì‹œìŠ¤í…œì— python-chardet ì´ ì„¤ì¹˜ ë˜ì–´ ìˆì„ ê²½ìš°, ì§€ì›í•˜ëŠ” ê¸°ëŠ¥ìœ¼ë¡œ,
+     CHARDET_MOZ ì™€ì˜ ê²°ê³¼ê°’ ë¹„êµ(ë™ì¼ ì•Œê³ ë¦¬ì¦˜)ë° ë””ë²„ê¹…ì„ ìœ„í•´ì„œ ì§€ì›ì„ í•œë‹¤.
 
-     Æ¯È÷ ÀÌ ±â´ÉÀÇ °æ¿ì Python C API¸¦ ÀÌ¿ëÇÏ¿© python code¸¦ È£ÃâÇÏ´Â ¹æ½ÄÀÌ±â
-     ¶§¹®¿¡ ¼º´ÉÀÌ ¸Å¿ì ÁÁÁö ¾Ê±â ¶§¹®¿¡ ¼­ºñ½º ¿ëÀ¸·Î´Â »ç¿ëÇÏ±â´Â Èûµé´Ù.
+     íŠ¹íˆ ì´ ê¸°ëŠ¥ì˜ ê²½ìš° Python C APIë¥¼ ì´ìš©í•˜ì—¬ python codeë¥¼ í˜¸ì¶œí•˜ëŠ” ë°©ì‹ì´ê¸°
+     ë•Œë¬¸ì— ì„±ëŠ¥ì´ ë§¤ìš° ì¢‹ì§€ ì•Šê¸° ë•Œë¬¸ì— ì„œë¹„ìŠ¤ ìš©ìœ¼ë¡œëŠ” ì‚¬ìš©í•˜ê¸°ëŠ” í˜ë“¤ë‹¤.
 
-     Áï, ÀÏ¹İ »ç¿ëÀÚµéÀº ÀÌ ±â´É¿¡ ´ëÇÑ °ü½ÉÀ» ²ôµµ·Ï ÇÑ´Ù.
+     ì¦‰, ì¼ë°˜ ì‚¬ìš©ìë“¤ì€ ì´ ê¸°ëŠ¥ì— ëŒ€í•œ ê´€ì‹¬ì„ ë„ë„ë¡ í•œë‹¤.
 
-     ÀÌ ±â´ÉÀ» »ç¿ëÇÏ±â À§ÇØ¼­´Â ´ÙÀ½ÀÇ °úÁ¤°ú È®ÀÎÀ» °ÅÄ¡µµ·Ï ÇÑ´Ù.
+     ì´ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ê¸° ìœ„í•´ì„œëŠ” ë‹¤ìŒì˜ ê³¼ì •ê³¼ í™•ì¸ì„ ê±°ì¹˜ë„ë¡ í•œë‹¤.
 
-     1) python-chardet Áö¿ø ¿©ºÎ È®ÀÎ
+     1) python-chardet ì§€ì› ì—¬ë¶€ í™•ì¸
 
         shell> python -c "import chardet; print chardet.__version__"
 
-        À§ÀÇ ¸í·ÉÀ» ½ÇÇàÇÏ¿© ¿¡·¯°¡ ¾øÀÌ ¹öÀüÀÌ ³ª¿Â´Ù¸é ÀÌ¹Ì ¼³Ä¡°¡ µÇ¾î ÀÖ´Â °æ¿ì
-        ÀÌ´Ù. 2009.02 ÇöÀç 1.0.1 ÀÌ ÃÖ½Å ¹öÀüÀÌ´Ù.
+        ìœ„ì˜ ëª…ë ¹ì„ ì‹¤í–‰í•˜ì—¬ ì—ëŸ¬ê°€ ì—†ì´ ë²„ì „ì´ ë‚˜ì˜¨ë‹¤ë©´ ì´ë¯¸ ì„¤ì¹˜ê°€ ë˜ì–´ ìˆëŠ” ê²½ìš°
+        ì´ë‹¤. 2009.02 í˜„ì¬ 1.0.1 ì´ ìµœì‹  ë²„ì „ì´ë‹¤.
 
-        ¼³Ä¡°¡ µÇ¾î ÀÖ´Ù¸é ?¹øÀ¸·Î °Ç³Ê¶Ú´Ù.
+        ì„¤ì¹˜ê°€ ë˜ì–´ ìˆë‹¤ë©´ ?ë²ˆìœ¼ë¡œ ê±´ë„ˆë›´ë‹¤.
 
-     2) python-chardet ¼³Ä¡
+     2) python-chardet ì„¤ì¹˜
 
         get python-chardet from http://chardet.feedparser.org/download/
 
@@ -68,18 +68,18 @@ Python C API¸¦ ÀÌ¿ëÇÏ¿© ÀÌ °á°ú °ªÀ» ÀÌ È®ÀåÀÇ function ¿¡¼­ °¡Á®¿Ã ¼ö ÀÖ´Ù.
         shell> python ./setup.py build
         shell> python ./setup.py install
 
-        CHARDET_PY ÀÇ °ªÀÌ -1 ÀÏ °æ¿ì ÀÌ ±â´ÉÀº Áö¿øÇÏÁö ¾Ê´Â °ÍÀÌ¸ç, Áö¿ø ½Ã¿¡
-        chardet_detect ÇÔ¼ö¿¡ CHARDET_PY MODE ·Î È£ÃâÀ» ÇÒ ¼ö °¡ ÀÖ´Ù.
+        CHARDET_PY ì˜ ê°’ì´ -1 ì¼ ê²½ìš° ì´ ê¸°ëŠ¥ì€ ì§€ì›í•˜ì§€ ì•ŠëŠ” ê²ƒì´ë©°, ì§€ì› ì‹œì—
+        chardet_detect í•¨ìˆ˜ì— CHARDET_PY MODE ë¡œ í˜¸ì¶œì„ í•  ìˆ˜ ê°€ ìˆë‹¤.
 
-* ¼³Ä¡
+* ì„¤ì¹˜
 
 shell> phpize
 shell> ./configure
-       Python chardet ±â´ÉÀ» Áö¿øÇÏ·Á¸é --enable-py-chardet ¿É¼ÇÀ» ÁÖµµ·Ï ÇÑ´Ù.
-       ÀÏ¹İ »ç¿ëÀÚ¶ó¸é ÀÌ ±â´É¿¡ ´ëÇÑ °ü½ÉÀ» °¡ÁöÁö ¸»±â ¹Ù¶õ´Ù.
+       Python chardet ê¸°ëŠ¥ì„ ì§€ì›í•˜ë ¤ë©´ --enable-py-chardet ì˜µì…˜ì„ ì£¼ë„ë¡ í•œë‹¤.
+       ì¼ë°˜ ì‚¬ìš©ìë¼ë©´ ì´ ê¸°ëŠ¥ì— ëŒ€í•œ ê´€ì‹¬ì„ ê°€ì§€ì§€ ë§ê¸° ë°”ë€ë‹¤.
 shell> make
 shell> cp -af modules/chardet.so $PHP_SHARED_EXTENSION_DIR/chardet.so
 
-* ¿¹Á¦
+* ì˜ˆì œ
 
-ÀÌ ÆÄÀÏ°ú ÇÔ²² ÀÖ´Â test.php ¸¦ ÂüÁ¶ÇÑ´Ù.
+ì´ íŒŒì¼ê³¼ í•¨ê»˜ ìˆëŠ” test.php ë¥¼ ì°¸ì¡°í•œë‹¤.
