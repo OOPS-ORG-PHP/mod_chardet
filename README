@@ -31,7 +31,7 @@ Python C API를 이용하여 이 결과 값을 이 확장의 function 에서 가져올 수 있다.
      chardet_detect 시에 CHARDET_ICU 옵션으로 사용할 수 있다.
      CHARDET_ICU 의 값이 -1 일 경우에 이 모드는 지원하지 않는다.
 
-  mod_charset은 Mozilla Universal Chardet 또는 libicu library 둘 중에 하나만 만족
+  mod_chardet은 Mozilla Universal Chardet 또는 libicu library 둘 중에 하나만 만족
   할 경우 빌드가 된다. 둘다 설치가 되었을 경우 Mozilla Universal Chardet이 기본값
   이 되며, Mozilla Universal Chardet이 설치되어 있지 않을 경우 ICU 가 기본값이 된
   다.
