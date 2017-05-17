@@ -1,5 +1,8 @@
 mod_chardet php extension
 ====
+[![License: MPL 1.1](https://img.shields.io/badge/License-MPL%201.1-brightgreen.svg)](https://opensource.org/licenses/MPL-1.1)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/OOPS-ORG-PHP/mod_chardet.svg)](https://github.com/OOPS-ORG-PHP/mod_chardet/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/OOPS-ORG-PHP/mod_chardet.svg)](https://github.com/OOPS-ORG-PHP/mod_chardet/pulls?q=is%3Apr+is%3Aclosed)
 
 ## License
 
