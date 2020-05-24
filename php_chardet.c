@@ -81,6 +81,7 @@
 #include "php_ini.h"
 #include "SAPI.h"
 #include "ext/standard/info.h"
+#include "zend_exceptions.h"
 
 #include "php_chardet.h"
 
@@ -212,7 +213,7 @@ PHP_MINIT_FUNCTION(chardet)
 #if defined(HAVE_SPL)
 	REGISTER_CHARDET_PER_CLASS(Exception, exception, spl_ce_RuntimeException);
 #else
-	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_exception_get_default(TSRMLS_C));
+	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_ce_exception);
 #endif
 
 	REGISTER_LONG_CONSTANT ("CHARDET_ICU", CHARDET_ICU, CONST_PERSISTENT | CONST_CS);
