@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.10.6" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+	<name>chardet</name>
+	<channel>pecl.php.net</channel>
+	<summary>chardet - charset detection</summary>
+	<description>
+		Determine the charset of the input data with Mozilla Universal Charset Detection C/C++ library
+		See also, https://github.com/OOPS-ORG-PHP/mod_chardet/
+	</description>
+	<lead>
+		<name>JoungKyun.Kim</name>
+		<user>joungkyun</user>
+		<email>joungkyun@daum.net</email>
+		<active>yes</active>
+	</lead>
+	<date>@curdate@</date>
+	<time>@curtime@</time>
+	<version>
+		<release>1.0.3</release>
+		<api>1.0.0</api>
+	</version>
+	<stability>
+		<release>stable</release>
+		<api>stable</api>
+	</stability>
+	<license uri="https://raw.githubusercontent.com/OOPS-ORG-PHP/mod_chardet/master/LICENSE">BSD 2-Clause</license>
+	<notes>
+	- Support PHP 7.4
+	</notes>
+	<contents>
+		<dir name="/">
+			<file md5sum="@LICENSE@" name="LICENSE" role="doc" />
+			<file md5sum="@README.md@" name="README.md" role="doc" />
+			<file md5sum="@README.ko.md@" name="README.ko.md" role="doc" />
+			<file md5sum="@config.m4@" name="config.m4" role="src" />
+			<file md5sum="@php_chardet.c@" name="php_chardet.c" role="src" />
+			<file md5sum="@php_chardet.h@" name="php_chardet.h" role="src" />
+			<file md5sum="@php_chardet_class.c@" name="php_chardet_class.c" role="src" />
+			<file md5sum="@php_chardet_class.h@" name="php_chardet_class.h" role="src" />
+			<file md5sum="@sample.php@" name="sample.php" role="src" />
+			<file md5sum="@sample-oop.php@" name="sample-oop.php" role="src" />
+			<dir name="tests">
+				<file md5sum="@tests/001_enable.phpt@" name="001_enable.phpt" role="test" />
+				<file md5sum="@tests/002_moz.phpt@" name="002_moz.phpt" role="test" />
+				<file md5sum="@tests/003_icu.phpt@" name="003_icu.phpt" role="test" />
+			</dir>
+		</dir> <!-- / -->
+	</contents>
+	<dependencies>
+		<required>
+			<php>
+				<min>7.0.0</min>
+			</php>
+			<pearinstaller>
+				<min>1.4.3</min>
+			</pearinstaller>
+		</required>
+	</dependencies>
+	<providesextension>chardet</providesextension>
+	<extsrcrelease />
+	<changelog>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>1.0.3</release><api>1.0.0</api></version>
+			<date>@curdate@</date>
+			<notes>
+				- Support PHP 7.4
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>0.0.5</release><api>0.0.1</api></version>
+			<date>2016-07-06</date>
+			<notes>
+				- for PHP3/4/5 branch
+				- add make test scripts
+				- support detect_handledata_r for binary safe problems (libchardet >= 1.0.5)
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>1.0.2</release><api>1.0.0</api></version>
+			<date>2016-07-05</date>
+			<notes>
+				- support detect_handledata_r for binary safe problems (libchardet >= 1.0.5)
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>1.0.1</release><api>1.0.0</api></version>
+			<date>2016-07-05</date>
+			<notes>
+				- support Exception on non-oop mode
+				- fixed segfault
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>1.0.0</release><api>1.0.0</api></version>
+			<date>2016-07-05</date>
+			<notes>
+				- support over php 7
+				- unsupport under php 3/4/5
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>0.0.4</release><api>0.0.1</api></version>
+			<date>2016-07-06</date>
+			<notes>
+				- fixed deprecated zend_get_parameters_ex
+				- support OOP method and exception
+				- support PHP 5.4
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>0.0.3</release><api>0.0.1</api></version>
+			<date>2016-07-06</date>
+			<notes>
+				- fixed config.m4 shell test syntax
+				- fixed compile error when undefined HAVE_ICU_CHARDET
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>0.0.2</release><api>0.0.1</api></version>
+			<date>2016-07-06</date>
+			<notes>
+				- changed moz to py
+				- add mozilla universal charset detect mode with c library
+			</notes>
+		</release>
+	</changelog>
+</package>
