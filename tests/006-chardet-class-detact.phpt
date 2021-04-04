@@ -3,20 +3,23 @@ Check for chardet_version
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
-	if ( version_compare(PHP_VERSION, "5.1.0", "<") ) {
+	if ( version_compare(PHP_VERSION, '5.1.0', '<') ) {
 		dl ('chardet.so');
 		if ( ! extension_loaded ('chardet') )
 			print 'skip';
 	} else
 		print 'skip';
 }
+# don't support class under PHP 5
+if ( version_compare(PHP_VERSION, '5.0.0', '<') )
+	print 'skip';
 ?>
 --POST--
 --GET--
 --INI--
 --FILE--
 <?php
-if ( version_compare(PHP_VERSION, "5.1.0", "<") )
+if ( version_compare(PHP_VERSION, '5.1.0', '<') )
     dl ('chardet.so');
 
 $cd = new CHARDET;
