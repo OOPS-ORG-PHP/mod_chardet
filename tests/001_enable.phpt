@@ -3,7 +3,12 @@ Check for chardet presence
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
-	print 'skip';
+	if ( version_compare(PHP_VERSION, "5.1.0", "<") ) {
+		dl ('chardet.so');
+		if ( ! extension_loaded ('chardet') )
+			print 'skip';
+	} else
+		print 'skip';
 }
 ?>
 --POST--

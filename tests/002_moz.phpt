@@ -3,7 +3,12 @@ Check for chardet presence
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
-	print 'skip';
+	if ( version_compare(PHP_VERSION, "5.1.0", "<") ) {
+		dl ('chardet.so');
+		if ( ! extension_loaded ('chardet') )
+			print 'skip';
+	} else
+		print 'skip';
 }
 ?>
 --POST--
@@ -11,6 +16,9 @@ if ( ! extension_loaded ('chardet') ) {
 --INI--
 --FILE--
 <?php
+if ( version_compare(PHP_VERSION, "5.1.0", "<") )
+    dl ('chardet.so');
+
 $strings = array (
 	'안녕하세요 abc는 영어고요, 가나다는 한글 입니다.',
 	'안녕',

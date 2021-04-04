@@ -1,7 +1,3 @@
-/*
- * $Id$
- */
-
 #ifndef PHP_CHARDET_H
 #define PHP_CHARDET_H
 

@@ -2,16 +2,15 @@
  * Project: mod_chardet :: Character set detect API
  * File:    mod_chardet_class.c
  *
- * Copyright (c) 2012 JoungKyun.Kim
+ * Copyright 2021. JoungKyun.Kim all rights reserved
  *
  * LICENSE: MPL or GPL
  *
  * @category    Charset
  * @package     mod_chardet
  * @author      JoungKyun.Kim <http://oops.org>
- * @copyright   2012 OOPS.org
+ * @copyright   2021. JoungKyun.Kim
  * @license     MPL or GPL
- * @version     SVN: $Id$
  * @since       File available since release 0.0.1
  */
 
