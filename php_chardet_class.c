@@ -18,6 +18,8 @@
  * PHP5 Charaset Detect library module "chardet"
  */
 
+#if PHP_MAJOR_VERSION > 4
+
 /* {{{ Class API */
 static int chardet_free_persistent (zend_rsrc_list_entry * le, void * ptr TSRMLS_DC) {
 	return le->ptr == ptr ? ZEND_HASH_APPLY_REMOVE : ZEND_HASH_APPLY_KEEP;
@@ -74,6 +76,8 @@ static zend_object_value chardet_object_new_exception (zend_class_entry * class_
 	return retval;
 }
 /* Class API }}} */
+
+#endif /* PHP_MAJOR_VERSION > 4 */
 
 /*
  * Local variables:

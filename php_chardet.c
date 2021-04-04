@@ -69,6 +69,7 @@ ZEND_DECLARE_MODULE_GLOBALS(chardet)
 /* True global resources - no need for thread safety here */
 static int le_chardet;
 
+#if PHP_MAJOR_VERSION > 4
 ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_detect, 0, 0, 2)
 	ZEND_ARG_INFO(0, fp_link)
 	ZEND_ARG_INFO(0, buf)
@@ -78,6 +79,10 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
 	ZEND_ARG_INFO(0, fp_link)
 ZEND_END_ARG_INFO()
+#else
+#  define arginfo_chardet_detect NULL
+#  define arginfo_chardet_close  NULL
+#endif
 
 /* {{{ INCLUDE CHARDET Classify header */
 #include "php_chardet_class.h"
@@ -175,6 +180,7 @@ PHP_MINIT_FUNCTION(chardet)
 {
 	le_chardet = zend_register_list_destructors_ex (_close_chardet_link, NULL, "Chardet link", module_number);
 
+#if PHP_MAJOR_VERSION > 4
 	REGISTER_CHARDET_CLASS(NULL);
 	chardet_ce->ce_flags &= ~ZEND_ACC_FINAL_CLASS;
 	chardet_ce->constructor->common.fn_flags |= ZEND_ACC_FINAL;
@@ -184,6 +190,7 @@ PHP_MINIT_FUNCTION(chardet)
 #elif PHP_MAJOR_VERSION >= 5
 	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_exception_get_default());
 #endif
+#endif /* PHP_MAJOR_VERSION > 4 */
 
 	REGISTER_LONG_CONSTANT ("CHARDET_ICU", CHARDET_ICU, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("CHARDET_MOZ", CHARDET_MOZ, CONST_PERSISTENT | CONST_CS);
@@ -226,7 +233,7 @@ PHP_MINFO_FUNCTION(chardet)
 								"Python"
 #endif
 	" library");
-	php_info_print_table_row(2, "URL", "http://devel.oops.org/");
+	php_info_print_table_row(2, "URL", "http://github.com/OOPS-ORG-PHP/mod_chardet/");
 	php_info_print_table_row(2, "Build version", CHARDET_VERSION);
 #ifdef HAVE_ICU_CHARDET
 	php_info_print_table_row(2, "ICU Library version", U_ICU_VERSION);
@@ -349,11 +356,13 @@ PHP_FUNCTION(chardet_open)
 			fp, le_chardet
 	);
 
+#if PHP_MAJOR_VERSION > 4
 	if ( object ) {
 		chardet_obj * obj;
 		obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
 		obj->u.fp = fp;
 	}
+#endif
 
 	CHARDET_RESTORE_ERROR_HANDLING;
 }
@@ -369,10 +378,12 @@ PHP_FUNCTION(chardet_close)
 	chardet_obj * obj;
 
 	if ( object ) {
+#if PHP_MAJOR_VERSION > 4
 		obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
 		if ( ! obj->u.fp )
 			RETURN_TRUE;
 		zend_list_delete (obj->u.fp->rsrc);
+#endif
 	} else {
 		if ( zend_parse_parameters (ZEND_NUM_ARGS () TSRMLS_CC, "r", &fp_link) == FAILURE )
 			return;
@@ -435,6 +446,7 @@ PHP_FUNCTION(chardet_detect)
 	}
 
 	if ( object ) {
+#if PHP_MAJOR_VERSION > 4
 		Obj = (chardet_obj *) zend_object_store_get_object (object TSRMLS_CC);
 		fp = Obj->u.fp;
 		if ( ! fp ) {
@@ -442,6 +454,7 @@ PHP_FUNCTION(chardet_detect)
 			CHARDET_RESTORE_ERROR_HANDLING;
 			RETURN_FALSE;
 		}
+#endif
 	} else
 		ZEND_FETCH_RESOURCE (fp, CharDetFP *, &fp_link, -1, "Chardet link", le_chardet);
 

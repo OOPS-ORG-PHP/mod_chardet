@@ -9,10 +9,6 @@ dnl If your extension references something external, use with:
 PHP_ARG_WITH(chardet, for charset detect support,
 [  --with-chardet          Include charset detect support])
 
-if test "x$PHP_EXECUTABLE" = "xNONE"; then
-    PHP_EXECUTABLE="/usr/bin/php"
-fi
-
 if test "$PHP_CHARDET" != "no"; then
 	PHP_ARG_ENABLE(moz-chardet, for Mozilla chardet support,
 	[  --enable-moz-chardet    Support Mozilla chardet [[default=yes]]], [no])
@@ -28,6 +24,32 @@ if test "$PHP_CHARDET" != "no"; then
 
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
+
+	AC_MSG_CHECKING([check the PHP mininum version for chardet (>=4.3.0 or <7.0.0)])
+	if test -z $phpincludedir ; then
+		phpincludedir=$prefix"/include/php"
+	fi
+
+	PHP_CHKVER=`
+		awk '/^#define PHP_VERSION_ID/ { print $NF; }' $phpincludedir/main/php_version.h 2> /dev/null
+	`
+	PHP_CURVER=`
+		awk '/^#define PHP_VERSION /  { print gensub(/\"/, "", "g", $NF); }' \
+			$phpincludedir/main/php_version.h 2> /dev/null
+	`
+	AC_MSG_RESULT([$PHP_CURVER])
+	if test -z $PHP_CHKVER ; then
+		IFS="." read MAJORL MINORL PATCHL <<< "$PHP_CURVER"
+		printf -v PHP_CHKVER "%d%02d%02d" "$MAJORL" "$MINORL" "$PATCHL"
+	fi
+
+	if test -z $PHP_CHKVER || test $PHP_CHKVER -lt 40300 ; then
+		AC_MSG_ERROR([The krisp extension is unsupported PHP $PHP_CURVER. Use PHP 4.3.0 or after!])
+	fi
+	if test -z $PHP_CHKVER || test $PHP_CHKVER -ge 70000 ; then
+		AC_MSG_ERROR([The krisp extension is unsupported PHP $PHP_CURVER. Use PHP 5.6 or before!])
+	fi
+
 
 	if test "$PHP_MOZ_CHARDET" = "no" -a "$PHP_ICU_CHARDET" = "no"; then
 		AC_MSG_ERROR([mod_chardet is needed --enable-moz-chardet or --enable-icu-chardet.])

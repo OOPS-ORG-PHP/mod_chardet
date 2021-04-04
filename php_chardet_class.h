@@ -1,6 +1,8 @@
 #ifndef PHP_CHARDET_CLASS_H
 #define PHP_CHARDET_CLASS_H
 
+#if PHP_MAJOR_VERSION > 4
+
 /* {{{ Exception entry */
 #if PHP_VERSION_ID >= 50300
 const
@@ -59,19 +61,19 @@ zend_module_dep chardet_deps[] = {
 /* }}} */
 
 /* {{{ For Class declears */
-#if PHP_VERSION_ID >= 50200
-#define CHARDET_ACC_PUBLIC , ZEND_ACC_PUBLIC
-#else
-#define CHARDET_ACC_PUBLIC
-#endif
-
 #if PHP_VERSION_ID >= 50300
 const
 #endif
 zend_function_entry chardet_methods[] = {
-	PHP_ME_MAPPING (__construct, chardet_open,   NULL                   CHARDET_ACC_PUBLIC)
-	PHP_ME_MAPPING (close,       chardet_close,  arginfo_chardet_close  CHARDET_ACC_PUBLIC)
-	PHP_ME_MAPPING (detect,      chardet_detect, arginfo_chardet_detect CHARDET_ACC_PUBLIC)
+#if PHP_VERSION_ID >= 50200
+	PHP_ME_MAPPING (__construct, chardet_open,   NULL,                   ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING (close,       chardet_close,  arginfo_chardet_close,  ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING (detect,      chardet_detect, arginfo_chardet_detect, ZEND_ACC_PUBLIC)
+#else
+	PHP_ME_MAPPING (__construct, chardet_open,   NULL)
+	PHP_ME_MAPPING (close,       chardet_close,  arginfo_chardet_close)
+	PHP_ME_MAPPING (detect,      chardet_detect, arginfo_chardet_detect)
+#endif
 	{NULL, NULL, NULL}
 };
 
@@ -108,6 +110,12 @@ typedef struct _chardet_object {
 	} u;
 } chardet_obj;
 /* For Class declears }}} */
+
+#else
+#  define CHARDET_REPLACE_ERROR_HANDLING
+#  define CHARDET_RESTORE_ERROR_HANDLING
+typedef zval chardet_obj;
+#endif // PHP_MAJOR_VERSION > 4
 
 #endif	/* PHP_CHARDET_CLASS_H */
 

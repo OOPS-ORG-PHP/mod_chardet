@@ -48,7 +48,7 @@ For more informations, see also [Reference](https://github.com/OOPS-ORG-PHP/mod_
  * mod_chardet versions
    * PHP 7 and after : mod_chardet >= 1.0.0
    * PHP 5 ans before : mod_chardet < 1.0.0
- * PHP >= 4.1
+ * PHP >= 4.3
  * [libchardet](https://github.com/joubgkyun/libchardet) >= 1.0.5
  * [libicu](http://site.icu-project.org/) (optional)
  * [python-chardet](https://pypi.python.org/pypi/chardet) (optional)

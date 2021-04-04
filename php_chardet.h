@@ -34,6 +34,12 @@
 #  endif
 #endif /* end of ifndef PHP_VERSION_ID */
 
+#if PHP_MAJOR_VERSION < 5
+#  ifdef getThis
+#    undef getThis
+#  endif
+#  define getThis() NULL
+#endif
 
 extern zend_module_entry chardet_module_entry;
 #define chardet_module_ptr &chardet_module_entry
