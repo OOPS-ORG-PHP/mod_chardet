@@ -34,6 +34,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
+// duplicated declare in /usr/include/python2.7/pyconfig-64.h:1191
+#ifdef _POSIX_C_SOURCE
+#  undef _POSIX_C_SOURCE
+#endif
+
 #ifdef HAVE_MOZ_CHARDET
 #include <chardet.h>
 
@@ -61,6 +66,10 @@
 #include "ext/standard/info.h"
 
 #include "php_chardet.h"
+
+#if PHP_VERSION_ID == 50000
+extern zend_class_entry *zend_exception_get_default(void);
+#endif
 
 /* If you declare any globals in php_chardet.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(chardet)
@@ -628,15 +637,13 @@ short py_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj **
 	PyObject * key, * value;
 	char * pytmp = NULL;
 	char * pybuf = NULL;
-	size_t buflen;
-	int pos = 0;
+	Py_ssize_t pos = 0;
 
 	if ( buf == NULL ) {
 		(*obj)->status = PY_BUFNULL;
 		return -1;
 	}
 
-	buflen = buflen;
 	pytmp = (char *) buf;
 
 	/*
