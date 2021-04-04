@@ -6,7 +6,7 @@ mod_chardet php extension
 
 ## License
 
-Copyright &copy; 2016 JoungKyun.Kim and all right reserved.
+&copy; 2021. JoungKyun.Kim all right reserved.
 
 This program is under MPL 1.1 or GPL v2
 

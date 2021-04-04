@@ -3,7 +3,7 @@ mod_chardet php extension
 
 ## License
 
-Copyright &copy; 2016 JoungKyun.Kim and all right reserved.
+&copy; 2021. JoungKyun.Kim all right reserved.
 
 이 프로그램은 MPL 1.1 또는 GLP v2의 영향을 받습니다.
 

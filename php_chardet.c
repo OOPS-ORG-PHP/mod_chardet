@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 JoungKyun.Kim <http://oops.org> all rights reserved
+ * Copyright 2021. JoungKyun.Kim all rights reserved.
  *
  * This file is part of mod_chardet
  *
@@ -21,16 +21,15 @@
  * Project: mod_chardet :: Character set detect API
  * File:    mod_chardet.c
  *
- * Copyright (c) 2016 JoungKyun.Kim
+ * Copyright 2021. JoungKyun.Kim all rights reserved.
  *
  * LICENSE: MPL or GPL
  *
  * @category    Charset
  * @package     mod_chardet
  * @author      JoungKyun.Kim <http://oops.org>
- * @copyright   2016 OOPS.org
+ * @copyright   2021. JoungKyun.Kim
  * @license     MPL or GPL
- * @version     SVN: $Id$
  * @since       File available since release 0.0.1
  */
 
