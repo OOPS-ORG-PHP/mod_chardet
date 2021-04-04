@@ -399,9 +399,9 @@ PHP_FUNCTION(chardet_detect)
 	CharDetObj * obj    = NULL;
 	const char * string = NULL;
 #ifdef HAVE_MOZ_CHARDET
-	int          type = CHARDET_MOZ;
+	long         type = CHARDET_MOZ;
 #else
-	int          type = CHARDET_ICU;
+	long         type = CHARDET_ICU;
 #endif
 	short        r = 0;
 

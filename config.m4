@@ -139,7 +139,7 @@ if test "$PHP_CHARDET" != "no"; then
 			PYPATH="$PATH:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 			PYPATH="$PYPATH:/usr/python/bin:/usr/local/python/bin:/opt/python/bin"
 			AC_PATH_PROG([PYEXEC], [python], , [$PYPATH])
-			test -z "$PYEXEC" && AC_MSG_ERROR([specify --with-moz-chardet=/patch/python])
+			test -z "$PYEXEC" && AC_MSG_ERROR([specify --enable-py-chardet=/patch/python])
 		else
 			AC_MSG_CHECKING([for python])
 			AC_MSG_RESULT([$PYEXEC])

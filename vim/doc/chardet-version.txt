@@ -13,7 +13,7 @@
 
 위의 예제의 결과는 다음과 같다:
 
-  The version of mod_chardet extension is 0.0.5.
+  The version of mod_chardet extension is 0.0.6.
 
 
 |chardet_open| |chardet_close| |chardet_detect|
