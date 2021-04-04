@@ -98,15 +98,7 @@ ZEND_DECLARE_MODULE_GLOBALS(chardet)
 /* True global resources - no need for thread safety here */
 static int le_chardet;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_detect, 0, 0, 2)
-	ZEND_ARG_INFO(0, fp_link)
-	ZEND_ARG_INFO(0, buf)
-	ZEND_ARG_INFO(0, type)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_chardet_close, 0, 0, 1)
-	ZEND_ARG_INFO(0, fp_link)
-ZEND_END_ARG_INFO()
+#include "php_chardet_arginfo.h"
 
 /* {{{ INCLUDE CHARDET Classify header */
 #include "php_chardet_class.h"
@@ -117,20 +109,20 @@ ZEND_END_ARG_INFO()
  * Every user visible function must have an entry in chardet_functions[].
  */
 const zend_function_entry chardet_functions[] = {
-	PHP_FE(chardet_version,     NULL)
+	ZEND_FE(chardet_version,     arginfo_chardet_version)
 #ifdef HAVE_MOZ_CHARDET
-	PHP_FE(chardet_moz_version, NULL)
+	ZEND_FE(chardet_moz_version, arginfo_chardet_moz_version)
 #endif
 #ifdef HAVE_ICU_CHARDET
-	PHP_FE(chardet_icu_version, NULL)
+	ZEND_FE(chardet_icu_version, arginfo_chardet_icu_version)
 #endif
 #ifdef HAVE_PY_CHARDET
-	PHP_FE(chardet_py_version,  NULL)
+	ZEND_FE(chardet_py_version,  arginfo_chardet_py_version)
 #endif
-	PHP_FE(chardet_open,        NULL)
-	PHP_FE(chardet_detect,      arginfo_chardet_detect)
-	PHP_FE(chardet_close,       arginfo_chardet_close)
-	{NULL, NULL, NULL}
+	ZEND_FE(chardet_open,        arginfo_chardet_open)
+	ZEND_FE(chardet_detect,      arginfo_chardet_detect)
+	ZEND_FE(chardet_close,       arginfo_chardet_close)
+	ZEND_FE_END
 };
 /* }}} */
 
@@ -269,7 +261,7 @@ PHP_MINFO_FUNCTION(chardet)
 }
 /* }}} */
 
-/* {{{ proto char chardet_version (void)
+/* {{{ proto chardet_version (void): string
  *  print chardet extension build number */
 PHP_FUNCTION(chardet_version)
 {
@@ -278,7 +270,7 @@ PHP_FUNCTION(chardet_version)
 /* }}} */
 
 #ifdef HAVE_MOZ_CHARDET
-/* {{{ proto char chardet_moz_version (void)
+/* {{{ proto chardet_moz_version (void): string
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_moz_version)
 {
@@ -288,7 +280,7 @@ PHP_FUNCTION(chardet_moz_version)
 #endif
 
 #ifdef HAVE_ICU_CHARDET
-/* {{{ proto char chardet_icu_version (void)
+/* {{{ proto chardet_icu_version (void): string
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_icu_version)
 {
@@ -298,7 +290,7 @@ PHP_FUNCTION(chardet_icu_version)
 #endif
 
 #ifdef HAVE_PY_CHARDET
-/* {{{ proto char chardet_icu_version (void)
+/* {{{ proto chardet_icu_version (void): string
  *  print chardet icu library version */
 PHP_FUNCTION(chardet_py_version)
 {
@@ -307,7 +299,7 @@ PHP_FUNCTION(chardet_py_version)
 /* }}} */
 #endif
 
-/* {{{ proto (resource) chardet_open (void)
+/* {{{ proto chardet_open (void): CHARDET
  */
 PHP_FUNCTION(chardet_open)
 {
@@ -390,7 +382,7 @@ PHP_FUNCTION(chardet_open)
 }
 /* }}} */
 
-/* {{{ proto (bool) chardet_close (resource link)
+/* {{{ proto chardet_close (CHARDET link): bool
  */
 PHP_FUNCTION(chardet_close)
 {
@@ -416,7 +408,7 @@ PHP_FUNCTION(chardet_close)
 }
 // }}}
 
-/* {{{ proto (object|false) chardet_detect (resource link, string buffer[, type method])
+/* {{{ proto chardet_detect (CHARDET link, string buffer, int type = CHARDET_MOZ): object|false
  *  resouce : stream
  *  string : string that checked encoding
  *  type   : CHARDET_ICU or CHARDET_MOZ or CHARDET_PY

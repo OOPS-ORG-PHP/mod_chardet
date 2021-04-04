@@ -27,9 +27,32 @@
 #define PHP_CHARDET_API
 #endif
 
-#ifdef ZTS
 #include "TSRM.h"
+
+#if PHP_VERSION_ID >= 80000
+#define TSRMLS_DC
+#define TSRMLS_CC
 #endif
+
+#if PHP_VERSION_ID < 80000
+#  define ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(a,b,c,d) ZEND_BEGIN_ARG_INFO_EX(a,0,b,c)
+#  define ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(a,b,c,d,e) ZEND_ARG_TYPE_INFO(a,b,c,d)
+#  ifdef ZEND_ARG_OBJ_INFO
+#    undef ZEND_ARG_OBJ_INFO
+#  endif
+#  define ZEND_ARG_OBJ_INFO(a,b,c,d) ZEND_ARG_TYPE_INFO(a,b,IS_RESOURCE,d)
+#endif
+
+#if PHP_VERSION_ID < 70200
+#  ifdef ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#    undef ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#  endif
+#  define ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+		static const zend_internal_arg_info name[] = { \
+			{ (const char*)(zend_uintptr_t)(required_num_args), NULL, type, return_reference, allow_null, 0 },
+#  define ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(a,b,c,d,e) ZEND_BEGIN_ARG_INFO_EX(a,0,b,c)
+#endif
+
 
 extern zend_module_entry chardet_module_entry;
 #define chardet_module_ptr &chardet_module_entry

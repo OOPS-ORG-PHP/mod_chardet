@@ -46,7 +46,7 @@ case "${mode}" in
 
 			rm -f package.xml
 			rm -f tests/*.{diff,exp,log,out,php,sh,mem}
-			#rm -f ${mod_name}_arginfo.h && git checkout -- ${mod_name}_arginfo.h
+			#rm -f *${mod_name}_arginfo.h && git checkout -- php_${mod_name}_arginfo.h
 			${normal}----->
 		EOL
 
@@ -58,7 +58,7 @@ case "${mode}" in
 
 		rm -f package.xml
 		rm -f tests/*.{diff,exp,log,out,php,sh,mem}
-		#rm -f ${mod_name}_arginfo.h && git checkout -- ${mod_name}_arginfo.h
+		#rm -f *${mod_name}_arginfo.h && git checkout -- php_${mod_name}_arginfo.h
 		;;
 	pack)
 		cp -af package.xml.tmpl package.xml
@@ -85,7 +85,7 @@ case "${mode}" in
 		PHPBIN=/opt/php-qa/php${2}/bin/php
 		PHPIZE=/opt/php-qa/php${2}/bin/phpize
 		PHPCONFIG=/opt/php-qa/php${2}/bin/php-config
-		PHP_OPT="-n"
+		PHP_OPT="-n "
 		LEGACY_TEST=0
 
 		if [[ $# == 2 ]]; then
@@ -96,7 +96,7 @@ case "${mode}" in
 
 		if [[ ! -f ./run-tests.php ]]; then
 			LEGACY_TEST=1
-			PHP_OPT="-d 'enable_dl=1' -d 'safe_mode=0' -d 'disable_error=0'"
+			PHP_OPT+="-d 'enable_dl=1' -d 'disable_error=0'"
 		fi
 		PHP_OPT+=" -d 'extension_dir=./modules/' -d 'extension=${mod_name}.so'"
 
@@ -158,7 +158,7 @@ case "${mode}" in
 			exit 1
 		fi
 		phpcmd="/usr/bin/php80"
-		perl -pi -e 's/ext_functions/korean_functions/g' build/gen_stub.php
+		perl -pi -e 's/ext_functions/chardet_functions/g' build/gen_stub.php
 		${phpcmd} build/gen_stub.php -f *.stub.php
 		;;
 	*)

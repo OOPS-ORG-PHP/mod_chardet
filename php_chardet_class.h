@@ -58,10 +58,10 @@ const zend_module_dep chardet_deps[] = {
 
 /* {{{ For Class declears */
 const zend_function_entry chardet_methods[] = {
-	PHP_ME_MAPPING (__construct,   chardet_open,               NULL,                   ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (close,         chardet_close,              arginfo_chardet_close,  ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (detect,        chardet_detect,             arginfo_chardet_detect, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	ZEND_ME_MAPPING (__construct, chardet_open,   arginfo_class_CHARDET___construct, ZEND_ACC_PUBLIC)
+	ZEND_ME_MAPPING (close,       chardet_close,  arginfo_class_CHARDET_close,  ZEND_ACC_PUBLIC)
+	ZEND_ME_MAPPING (detect,      chardet_detect, arginfo_class_CHARDET_detect, ZEND_ACC_PUBLIC)
+	ZEND_FE_END
 };
 
 #define REGISTER_CHARDET_CLASS(parent) { \
