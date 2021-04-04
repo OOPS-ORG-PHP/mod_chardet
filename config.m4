@@ -29,6 +29,21 @@ if test "$PHP_CHARDET" != "no"; then
 	PHP_SUBST(LDFLAGS)
 	PHP_SUBST(CPPFLAGS)
 
+	AC_MSG_CHECKING([check the PHP mininum version for chatdet (>=7.0.0)])
+	PHP_CHKVER=`
+		awk '/^#define PHP_VERSION_ID/ { print $NF; }' $phpincludedir/main/php_version.h 2> /dev/null
+	`
+	PHP_CURVER=`
+		awk '/^#define PHP_VERSION /  { print gensub(/\"/, "", "g", $NF); }' \
+			$phpincludedir/main/php_version.h 2> /dev/null
+	`
+	AC_MSG_RESULT([$PHP_CURVER])
+
+	if test -z $PHP_CHKVER || test $PHP_CHKVER -lt 70000 ; then
+		AC_MSG_ERROR([The chardet extension is unsupported PHP $PHP_CURVER. Use PHP 7.0.0 or after!])
+	fi
+
+
 	if test "$PHP_MOZ_CHARDET" = "no" -a "$PHP_ICU_CHARDET" = "no"; then
 		AC_MSG_ERROR([mod_chardet is needed --enable-moz-chardet or --enable-icu-chardet.])
 	fi
