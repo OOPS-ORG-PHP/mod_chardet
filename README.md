@@ -5,7 +5,7 @@ mod_chardet php extension
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/OOPS-ORG-PHP/mod_chardet.svg)](https://github.com/OOPS-ORG-PHP/mod_chardet/pulls?q=is%3Apr+is%3Aclosed)
 
 **This branch is for PHP 5 or less.
-For use in PHP 7 or later, see the [Master branch](oops-org-php/mod_charset).**
+For use in PHP 7 or later, see the [Master branch](https://github.com/oops-org-php/mod_chardet).**
 
 ## License
 
