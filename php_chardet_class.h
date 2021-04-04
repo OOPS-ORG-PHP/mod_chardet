@@ -2,7 +2,10 @@
 #define PHP_CHARDET_CLASS_H
 
 /* {{{ Exception entry */
-const zend_function_entry chardet_methods_exception[] = {
+#if PHP_VERSION_ID >= 50300
+const
+#endif
+zend_function_entry chardet_methods_exception[] = {
     {NULL, NULL, NULL}
 };
 /* }}} */
@@ -10,19 +13,28 @@ const zend_function_entry chardet_methods_exception[] = {
 /* Exception declear {{{
  */
 #if PHP_MAJOR_VERSION >= 5
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+#if defined(HAVE_SPL) && PHP_VERSION_ID >= 50100
 extern PHPAPI zend_class_entry *spl_ce_RuntimeException;
 extern PHPAPI zend_class_entry *spl_ce_Countable;
-#endif
+#endif // defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
 
+#if PHP_VERSION_ID >= 50300
 #define CHARDET_REPLACE_ERROR_HANDLING \
 	zend_replace_error_handling ( \
 		object ? EH_THROW : EH_NORMAL, \
 		chardet_ce_exception, \
 		&error_handling TSRMLS_CC \
 	)
-
 #define CHARDET_RESTORE_ERROR_HANDLING zend_restore_error_handling (&error_handling TSRMLS_CC)
+#else
+#define CHARDET_REPLACE_ERROR_HANDLING \
+	php_set_error_handling ( \
+		object ? EH_THROW : EH_NORMAL, \
+		chardet_ce_exception TSRMLS_CC \
+	)
+#define CHARDET_RESTORE_ERROR_HANDLING php_std_error_handling()
+#endif // PHP_VERSION_ID >= 50300
+
 #else
 #define CHARDET_REPLACE_ERROR_HANDLIN0 int chardet_error_dummy_handing = 1
 #define CHARDET_RESTORE_ERROR_HANDLING chardet_error_dummy_handing = 0
@@ -33,8 +45,12 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
  *
  * CHARDET dependancies
  */
-const zend_module_dep chardet_deps[] = {
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+#if PHP_VERSION_ID >= 50300
+const
+#endif
+zend_module_dep chardet_deps[] = {
+//#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+#if defined(HAVE_SPL) && PHP_VERSION_ID >= 50100
 	ZEND_MOD_REQUIRED("spl")
 #endif
 	{NULL, NULL, NULL}
@@ -42,7 +58,10 @@ const zend_module_dep chardet_deps[] = {
 /* }}} */
 
 /* {{{ For Class declears */
-const zend_function_entry chardet_methods[] = {
+#if PHP_VERSION_ID >= 50300
+const
+#endif
+zend_function_entry chardet_methods[] = {
 	PHP_ME_MAPPING (__construct,   chardet_open,               NULL,                   ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING (close,         chardet_close,              arginfo_chardet_close,  ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING (detect,        chardet_detect,             arginfo_chardet_detect, ZEND_ACC_PUBLIC)

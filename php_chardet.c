@@ -87,7 +87,10 @@ ZEND_END_ARG_INFO()
  *
  * Every user visible function must have an entry in chardet_functions[].
  */
-const zend_function_entry chardet_functions[] = {
+#if PHP_VERSION_ID >= 50300
+const
+#endif
+zend_function_entry chardet_functions[] = {
 	PHP_FE(chardet_version,			NULL)
 #ifdef HAVE_MOZ_CHARDET
 	PHP_FE(chardet_moz_version,		NULL)
@@ -279,7 +282,9 @@ PHP_FUNCTION(chardet_open)
 {
 	zval      * object = getThis ();
 	CharDetFP * fp = NULL;
+#if PHP_VERSION_ID >= 50300
 	zend_error_handling error_handling;
+#endif
 #ifdef HAVE_ICU_CHARDET
 	UErrorCode status = U_ZERO_ERROR;
 #endif
@@ -407,7 +412,9 @@ PHP_FUNCTION(chardet_detect)
 
 	zval        * object = getThis ();
 	chardet_obj * Obj;
+#if PHP_VERSION_ID >= 50300
 	zend_error_handling error_handling;
+#endif
 
 	CHARDET_REPLACE_ERROR_HANDLING;
 
