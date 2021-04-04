@@ -111,11 +111,11 @@ zend_function_entry chardet_functions[] = {
 /* {{{ chardet_module_entry
  */
 zend_module_entry chardet_module_entry = {
-#if ZEND_MODULE_API_NO >= 20050922
+#if PHP_VERSION_ID >= 50100
 	STANDARD_MODULE_HEADER_EX,
 	NULL,
 	chardet_deps,
-#elif ZEND_MODULE_API_NO >= 20010901
+#elif PHP_VERSION_ID >= 40100
 	STANDARD_MODULE_HEADER,
 #endif
 	"chardet",
@@ -179,10 +179,10 @@ PHP_MINIT_FUNCTION(chardet)
 	chardet_ce->ce_flags &= ~ZEND_ACC_FINAL_CLASS;
 	chardet_ce->constructor->common.fn_flags |= ZEND_ACC_FINAL;
 
-#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+#if defined(HAVE_SPL) && PHP_VERSION_ID >= 50100
 	REGISTER_CHARDET_PER_CLASS(Exception, exception, spl_ce_RuntimeException);
 #elif PHP_MAJOR_VERSION >= 5
-	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_exception_get_default(TSRMLS_C));
+	REGISTER_CHARDET_PER_CLASS(Exception, exception, zend_exception_get_default());
 #endif
 
 	REGISTER_LONG_CONSTANT ("CHARDET_ICU", CHARDET_ICU, CONST_PERSISTENT | CONST_CS);

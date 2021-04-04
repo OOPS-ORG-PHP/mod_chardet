@@ -45,26 +45,33 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
  *
  * CHARDET dependancies
  */
+#if PHP_VERSION_ID >= 50100
 #if PHP_VERSION_ID >= 50300
 const
 #endif
 zend_module_dep chardet_deps[] = {
-//#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
 #if defined(HAVE_SPL) && PHP_VERSION_ID >= 50100
 	ZEND_MOD_REQUIRED("spl")
 #endif
 	{NULL, NULL, NULL}
 };
+#endif
 /* }}} */
 
 /* {{{ For Class declears */
+#if PHP_VERSION_ID >= 50200
+#define CHARDET_ACC_PUBLIC , ZEND_ACC_PUBLIC
+#else
+#define CHARDET_ACC_PUBLIC
+#endif
+
 #if PHP_VERSION_ID >= 50300
 const
 #endif
 zend_function_entry chardet_methods[] = {
-	PHP_ME_MAPPING (__construct,   chardet_open,               NULL,                   ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (close,         chardet_close,              arginfo_chardet_close,  ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING (detect,        chardet_detect,             arginfo_chardet_detect, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING (__construct, chardet_open,   NULL                   CHARDET_ACC_PUBLIC)
+	PHP_ME_MAPPING (close,       chardet_close,  arginfo_chardet_close  CHARDET_ACC_PUBLIC)
+	PHP_ME_MAPPING (detect,      chardet_detect, arginfo_chardet_detect CHARDET_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
