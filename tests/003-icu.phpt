@@ -1,5 +1,5 @@
 --TEST--
-Check for chardet presence
+Check for chardet icu presence
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
@@ -10,6 +10,8 @@ if ( ! extension_loaded ('chardet') ) {
 	} else
 		print 'skip';
 }
+if ( CHARDET_ICU == -1 ) {
+	echo 'skip';
 ?>
 --POST--
 --GET--
@@ -27,14 +29,9 @@ $strings = array (
 );
 
 $fp = chardet_open ();
-
-if ( CHARDET_MOZ != -1 )
-	$moz = chardet_detect ($fp, $strings[0]);
-
-if ( CHARDET_MOZ != -1 && $moz )
-	printf ('chardet moz is available');
-
+$icu = chardet_detect ($fp, $strings[0], CHARDET_ICU);
+echo $icu->encoding;
 chardet_close ($fp);
 ?>
 --EXPECT--
-chardet moz is available
+EUC-KR

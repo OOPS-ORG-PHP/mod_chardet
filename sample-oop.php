@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?
+<?php
 if ( ! extension_loaded ('chardet') ) {
 	if ( PHP_VERSION_ID > 50399 ) {
 		fprintf (STDERR, "Chardet module not loaded!\n");
@@ -8,6 +8,11 @@ if ( ! extension_loaded ('chardet') ) {
 		if ( ini_get ('enable_dl') )
 			dl ('chardet.so');
 	}
+}
+
+if ( version_compare (PHP_VERSION, "5.0.0", "<") ) {
+	echo "Chardet Classfy is supported PHP 5.0.0 and after!\n";
+	exit;
 }
 
 $strings = array (
