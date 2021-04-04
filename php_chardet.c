@@ -712,8 +712,10 @@ short py_chardet (CharDetFP * fp, zend_string * buf, CharDetObj ** obj) {
 					(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
 		}
 
+#if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 6
 		Py_DECREF (key);
 		Py_DECREF (value);
+#endif
 	}
 
 	return 0;
