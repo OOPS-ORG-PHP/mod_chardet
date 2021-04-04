@@ -1,10 +1,12 @@
 --TEST--
-Check for chardet icu presence
+Check for chardet py presence
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
 	print 'skip';
 }
+if ( CHARDET_PY == -1 )
+	print 'skip';
 ?>
 --POST--
 --GET--
@@ -19,14 +21,9 @@ $strings = array (
 );
 
 $fp = chardet_open ();
-
-if ( CHARDET_ICU != -1 )
-	$icu = chardet_detect ($fp, $strings[0], CHARDET_ICU);
-
-if ( CHARDET_ICU != -1 && $icu )
-	printf ('chardet icu is available');
-
+$py = chardet_detect ($fp, $strings[0], CHARDET_PY);
+echo $py->encoding;
 chardet_close ($fp);
 ?>
 --EXPECT--
-chardet icu is available
+EUC-KR

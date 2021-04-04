@@ -5,6 +5,8 @@ Check for chardet presence
 if ( ! extension_loaded ('chardet') ) {
 	print 'skip';
 }
+if ( CHARDET_MOZ == -1 )
+	print 'skip';
 ?>
 --POST--
 --GET--
@@ -19,14 +21,12 @@ $strings = array (
 );
 
 $fp = chardet_open ();
-
-if ( CHARDET_MOZ != -1 )
-	$moz = chardet_detect ($fp, $strings[0]);
-
-if ( CHARDET_MOZ != -1 && $moz )
-	printf ('chardet moz is available');
-
+$moz = chardet_detect ($fp, $strings[0]);
+echo $moz->encoding . "\n";
+$moz = chardet_detect ($fp, $strings[0], CHARDET_ICU);
+echo $moz->encoding;
 chardet_close ($fp);
 ?>
 --EXPECT--
-chardet moz is available
+EUC-KR
+EUC-KR

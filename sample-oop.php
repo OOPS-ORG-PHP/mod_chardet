@@ -1,13 +1,8 @@
 #!/usr/bin/php
 <?php
 if ( ! extension_loaded ('chardet') ) {
-	if ( PHP_VERSION_ID > 50399 ) {
-		fprintf (STDERR, "Chardet module not loaded!\n");
-		exit (1);
-	} else {
-		if ( ini_get ('enable_dl') )
-			dl ('chardet.so');
-	}
+	fprintf (STDERR, "Chardet module not loaded!\n");
+	exit (1);
 }
 
 $strings = array (
