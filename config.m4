@@ -168,22 +168,22 @@ if test "$PHP_CHARDET" != "no"; then
 		fi
 
 		AC_MSG_CHECKING([python version])
-		PYVER=`$PYEXEC -c "import sys; print '%d.%d' % (sys.version_info[[0]], sys.version_info[[1]])"`
+		PYVER=`$PYEXEC -c "import sys; print('%d.%d' % (sys.version_info[[0]], sys.version_info[[1]]))"`
 		AC_MSG_RESULT([$PYVER])
 
 		AC_MSG_CHECKING([python include path])
-		PYINC=`$PYEXEC -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
+		PYINC=`$PYEXEC -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())"`
 		AC_MSG_RESULT([$PYINC])
 
 		CPPFLAGS="$CPPFLAGS -I$PYINC"
 
 		AC_MSG_CHECKING([python site-package path])
-		PYLIB=`$PYEXEC -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(1)"`
+		PYLIB=`$PYEXEC -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(1))"`
 		AC_MSG_RESULT([$PYLIB])
 
 		PYLIBNAME="python$PYVER"
 		PYLIBOPT="-l$PYLIBNAME"
-		PYPREFIX="`$PYEXEC -c \"import sys; print sys.prefix\"`"
+		PYPREFIX="`$PYEXEC -c \"import sys; print(sys.prefix)\"`"
 		
 		AC_MSG_CHECKING([for python C library])
 		SEARCHPATH="lib64 lib local/lib64 local/lib"

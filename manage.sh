@@ -84,7 +84,7 @@ case "${mode}" in
 		PHPBIN=/opt/php-qa/php${2}/bin/php
 		PHPIZE=/opt/php-qa/php${2}/bin/phpize
 		PHPCONFIG=/opt/php-qa/php${2}/bin/php-config
-		PHP_OPT="-n "
+		PHP_OPT="-n"
 		LEGACY_TEST=0
 
 		${PHPBIN} -i | grep -q "^safe_mode =>"
@@ -92,13 +92,13 @@ case "${mode}" in
 
 		if [[ $# == 2 ]]; then
 			./manage.sh clean
-			echo "${PHPIZE} && ./configure"
-			${PHPIZE} && ./configure && make -j8 || exit 0
+			echo "${PHPIZE} && ./configure --enable-py-chardet"
+			${PHPIZE} && ./configure --enable-py-chardet && make -j8 || exit 0
 		fi
 
 		if [[ ! -f ./run-tests.php ]]; then
 			LEGACY_TEST=1
-			PHP_OPT+="-d 'enable_dl=1' -d 'disable_error=0'"
+			PHP_OPT+=" -d 'enable_dl=1' -d 'disable_error=0'"
 		fi
 		PHP_OPT+=" -d 'extension_dir=./modules/' -d 'extension=${mod_name}.so'"
 

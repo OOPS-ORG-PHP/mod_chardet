@@ -565,9 +565,9 @@ short chardet_obj_init (CharDetObj ** obj) {
 
 void chardet_obj_free (CharDetObj ** obj) {
 	if ( *obj != NULL ) {
-		SAFE_EFREE((*obj)->encoding)
-		SAFE_EFREE((*obj)->lang)
-		SAFE_EFREE(*obj)
+		SAFE_EFREE((*obj)->encoding);
+		SAFE_EFREE((*obj)->lang);
+		SAFE_EFREE(*obj);
 	}
 }
 
@@ -698,8 +698,10 @@ short py_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj **
 					(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
 		}
 
+#if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 6
 		Py_DECREF (key);
 		Py_DECREF (value);
+#endif
 	}
 
 	return 0;

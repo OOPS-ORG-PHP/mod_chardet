@@ -43,23 +43,22 @@ foreach ( $strings as $s ) {
 	#                                confidence  : detecting confidence
 	#                                status      : error code (0 is not error)
 	#
-	if ( CHARDET_MOZ != -1 )
+	echo "ORIGINAL => $s\n";
+	if ( CHARDET_MOZ != -1 ) {
 		$moz = chardet_detect ($fp, $s);
-	if ( CHARDET_ICU != -1 )
-		$icu = chardet_detect ($fp, $s, CHARDET_ICU);
-	if ( CHARDET_PY != -1 )
-		$py = chardet_detect ($fp, $s, CHARDET_PY);
-
-	echo "$s\n";
-	if ( CHARDET_MOZ != -1 )
 		printf ("MOZ : Encoding -> %-12s, Confidence -> %3d, Status -> %d\n",
 				$moz->encoding, $moz->confidence, $moz->status);
-	if ( CHARDET_ICU != -1 )
+	}
+	if ( CHARDET_ICU != -1 ) {
+		$icu = chardet_detect ($fp, $s, CHARDET_ICU);
 		printf ("ICU : Encoding -> %-12s, Confidence -> %3d, Status -> %d\n",
 				$icu->encoding, $icu->confidence, $icu->status);
-	if ( CHARDET_PY != -1 )
+	}
+	if ( CHARDET_PY != -1 ) {
+		$py = chardet_detect ($fp, $s, CHARDET_PY);
 		printf ("PY  : Encoding -> %-12s, Confidence -> %3d, Status -> %d\n",
 				$py->encoding, $py->confidence, $py->status);
+	}
 	echo "\n";
 
 	$i++;

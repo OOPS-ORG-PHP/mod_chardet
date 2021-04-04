@@ -163,7 +163,7 @@ short py_chardet (CharDetFP *, const char *, size_t, CharDetObj **);
 #endif
 
 #ifndef SAFE_EFREE
-#define SAFE_EFREE(p) { if(p) { efree(p); (p) = NULL; } }
+#define SAFE_EFREE(p) do { if(p) { efree(p); (p) = NULL; } } while(0)
 #endif
 
 #endif	/* PHP_CHARDET_H */
