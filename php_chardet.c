@@ -632,39 +632,90 @@ short icu_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj *
 #endif
 
 #ifdef HAVE_PY_CHARDET
+
+#if PY_MAJOR_VERSION < 3
+#  define PyUnicode_AsUTF8 PyString_AS_STRING
+#  define PyLong_AS_LONG PyInt_AS_LONG
+#endif
+
+/*
+ * Make strings to python bytecode.
+ * On python 2, just change python conflict charactors.
+ */
+// {{{ char * encodePyByteCode (const char * str, size_t len)
+char * encodePyByteCode (const char * str, size_t len) {
+#if PY_MAJOR_VERSION < 3
+	char * r = NULL;
+	int    i = 0;
+
+	r = (char *) emalloc (sizeof (char) * (len + 1));
+	memset (r, 0, sizeof (char) * (len + 1));
+
+	for ( i=0; i<len; i++ ) {
+		// replace python conflict charactors
+		if ( str[i] == '\'' || str[i] == '"' || str[i] == '\r' || str[i] == '\n' )
+			r[i] = ' ';
+		else
+			r[i] = str[i];
+	}
+#else
+	char * r = NULL;
+	char   buf[5] = { 0, };
+	int    i, j;
+
+	r = (char *) emalloc (sizeof (char) * (len * 4 + 1));
+	memset (r, 0, sizeof (char) * (len * 4 + 1));
+	for ( i=0, j=0; i<len; i++ ) {
+		if ( str[i] >= 0 && str[i] < 128 ) {
+			// replace python conflict charactors
+			if ( str[i] == '\'' || str[i] == '"' || str[i] == '\r' || str[i] == '\n' )
+				memset (r + j, 32, 1); // space
+			else
+				memset (r + j, str[i], 1);
+			j++;
+			continue;
+		}
+
+		sprintf (buf, "\\x%x", str[i] & 0x000000ff);
+		memcpy (r + j, buf, 4);
+		j += 4;
+	}
+#endif
+
+	return r;
+}
+// }}}
+
 short py_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj ** obj) {
 	PyObject * pResult;
 	PyObject * key, * value;
 	char * pytmp = NULL;
 	char * pybuf = NULL;
 	Py_ssize_t pos = 0;
+	int msize = 0;
 
 	if ( buf == NULL ) {
 		(*obj)->status = PY_BUFNULL;
 		return -1;
 	}
 
-	pytmp = (char *) buf;
-
-	/*
-	 * replace python conflict charactors
-	 */
-	for ( pos=0; pos<buflen; pos++ ) {
-		if ( pytmp[pos] == '\'' || pytmp[pos] == '"' || pytmp[pos] == '\r' || pytmp[pos] == '\n' )
-			pytmp[pos] = ' ';
-	}
-	pos = 0;
-
-	pybuf = (char *) emalloc (sizeof (char) * (20 + buflen + 1));
-
+	pytmp = encodePyByteCode (buf, buflen);
+	msize = sizeof (char) * (strlen (pytmp) + 19);
+	pybuf = (char *) emalloc (msize);
 	if ( pybuf == NULL ) {
 		(*obj)->status = PY_MEMLOC;
+		SAFE_EFREE (pytmp);
 		return -1;
 	}
+	memset (pybuf, 0, msize);
+#if PY_MAJOR_VERSION < 3
+	sprintf (pybuf, "detector.feed(\"%s\")", pytmp);
+#else
+	sprintf (pybuf, "detector.feed(b\"%s\")", pytmp);
+#endif
+	SAFE_EFREE (pytmp);
 
 	PyRun_SimpleString ("detector.reset()");
-
-	sprintf (pybuf, "detector.feed(\"%s\")", pytmp);
 	if ( PyRun_SimpleString (pybuf) == -1 ) {
 		(*obj)->status = PY_DETECT_FAILURE;
 		SAFE_EFREE(pybuf);
@@ -686,16 +737,20 @@ short py_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj **
 		return -1;
 	}
 
+	/*
+	 * pResult has 3 members { encoding, confidence, language }
+	 * language member throw away.
+	 */
 	while ( PyDict_Next (pResult, &pos, &key, &value) ) {
-		switch (strcmp (PyString_AS_STRING (key), "encoding")) {
-			case 0 :
-				(*obj)->encoding = estrdup (PyString_AS_STRING (value));
-				break;
-			default :
-				if ( PyInt_Check (value) )
-					(*obj)->confidence = PyInt_AS_LONG (value) * 100;
-				else
-					(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
+		pybuf = PyUnicode_AsUTF8 (key);
+
+		if ( strcmp (pybuf, "encoding") == 0 ) {
+			(*obj)->encoding = estrdup (PyUnicode_AsUTF8 (value));
+		} else if ( strcmp (pybuf, "confidence") == 0 ) {
+			if ( PyLong_Check (value) )
+				(*obj)->confidence = PyLong_AS_LONG (value) * 100;
+			else
+				(*obj)->confidence = PyFloat_AS_DOUBLE (value) * 100;
 		}
 
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 6
