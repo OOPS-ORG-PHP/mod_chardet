@@ -738,8 +738,9 @@ short py_chardet (CharDetFP * fp, const char * buf, size_t buflen, CharDetObj **
 	}
 
 	/*
-	 * pResult has 3 members { encoding, confidence, language }
-	 * language member throw away.
+	 * pResult has 3 properties { encoding, confidence, language }
+	 * However, CHARDET 2.X does not support "language" property.
+	 * So, "language" property is abandoned.
 	 */
 	while ( PyDict_Next (pResult, &pos, &key, &value) ) {
 		pybuf = PyUnicode_AsUTF8 (key);
