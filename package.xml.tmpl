@@ -25,10 +25,17 @@
 	</stability>
 	<license uri="https://raw.githubusercontent.com/OOPS-ORG-PHP/mod_chardet/master/LICENSE">MPL v1.1 or GPL v2</license>
 	<notes>
+		- fixed #4 confirm PHP 5.5 and 5.6
+		- fixed #5 segfault with 3th argument of chardet_detact
+		- fixed #6 build failure with PHP 5.2
+		- fixed #7 build failure on PHP 5.0
+		- fixed #8 build failure PHP 4
+		- fixed #9 build failure with enable-py-chardet option
+		- fixed #10 segfault occurs when chardet_detect is multiple call with CHARDET_PY flag
+		- fixed #11 support python 3 for py chardet
 	</notes>
 	<contents>
 		<dir name="/">
-			<file md5sum="@LICENSE@" name="LICENSE" role="doc" />
 			<file md5sum="@README.md@" name="README.md" role="doc" />
 			<file md5sum="@config.m4@" name="config.m4" role="src" />
 			<file md5sum="@php_chardet.c@" name="php_chardet.c" role="src" />
@@ -38,16 +45,19 @@
 			<file md5sum="@sample.php@" name="sample.php" role="src" />
 			<file md5sum="@sample-oop.php@" name="sample-oop.php" role="src" />
 			<dir name="tests">
-				<file md5sum="@tests/001_enable.phpt@" name="001_enable.phpt" role="test" />
-				<file md5sum="@tests/002_moz.phpt@" name="002_moz.phpt" role="test" />
-				<file md5sum="@tests/003_icu.phpt@" name="003_icu.phpt" role="test" />
+				<file md5sum="@tests/001-enable.phpt@" name="001-enable.phpt" role="test" />
+				<file md5sum="@tests/002-moz.phpt@" name="002-moz.phpt" role="test" />
+				<file md5sum="@tests/003-icu.phpt@" name="003-icu.phpt" role="test" />
+				<file md5sum="@tests/004-py.phpt@" name="004-py.phpt" role="test" />
+				<file md5sum="@tests/005-chardet_version.phpt@" name="005-chardet_version.phpt" role="test" />
+				<file md5sum="@tests/006-chardet-class-detact.phpt@" name="006-chardet-class-detact.phpt" role="test" />
 			</dir>
 		</dir> <!-- / -->
 	</contents>
 	<dependencies>
 		<required>
 			<php>
-				<min>4.1.0</min>
+				<min>4.3.0</min>
 			</php>
 			<pearinstaller>
 				<min>1.4.3</min>
@@ -62,6 +72,14 @@
 			<version><release>0.0.6</release><api>0.0.1</api></version>
 			<date>@curdate@</date>
 			<notes>
+				- fixed #4 confirm PHP 5.5 and 5.6
+				- fixed #5 segfault with 3th argument of chardet_detact
+				- fixed #6 build failure with PHP 5.2
+				- fixed #7 build failure on PHP 5.0
+				- fixed #8 build failure PHP 4
+				- fixed #9 build failure with enable-py-chardet option
+				- fixed #10 segfault occurs when chardet_detect is multiple call with CHARDET_PY flag
+				- fixed #11 support python 3 for py chardet
 			</notes>
 		</release>
 		<release>

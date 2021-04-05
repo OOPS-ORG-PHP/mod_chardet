@@ -39,7 +39,7 @@ case "${mode}" in
 	clean)
 		cat <<-EOL
 			${bwhite}[ -f Makefile ] && make distclean
-			rm -rf autom4te.cache build include modules
+			rm -rf autom4te.cache build include modules tmp-php.ini
 			rm -f .deps Makefile* ac*.m4 dyn*.m4 compile *.loT
 			rm -f config.h* config.nice configure* config.sub config.guess
 			rm -f install-sh ltmain.sh missing mkinstalldirs run-tests.php
@@ -51,7 +51,7 @@ case "${mode}" in
 		EOL
 
 		[ -f Makefile ] && make distclean
-		rm -rf autom4te.cache build include modules
+		rm -rf autom4te.cache build include modules tmp-php.ini
 		rm -f .deps Makefile* ac*.m4 dyn*.m4 compile *.loT
 		rm -f config.h* config.nice configure* config.sub config.guess
 		rm -f install-sh ltmain.sh missing mkinstalldirs run-tests.php
