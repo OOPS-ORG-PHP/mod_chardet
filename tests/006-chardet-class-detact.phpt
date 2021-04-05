@@ -1,5 +1,5 @@
 --TEST--
-Check for chardet_version
+Check for chardet classfy operation
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('chardet') ) {
