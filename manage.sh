@@ -90,8 +90,8 @@ case "${mode}" in
 
 		if [[ $# == 2 ]]; then
 			./manage.sh clean
-			echo "${PHPIZE} && ./configure --enable-py-chardet"
-			${PHPIZE} && ./configure --enable-py-chardet && make -j8 || exit 0
+			echo "${PHPIZE} && ./configure --enable-py-chardet=/usr/bin/python3"
+			${PHPIZE} && ./configure --enable-py-chardet=/usr/bin/python3 && make -j8 || exit 0
 		fi
 
 		if [[ ! -f ./run-tests.php ]]; then

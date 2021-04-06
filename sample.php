@@ -56,9 +56,9 @@ try {
 				$icu->encoding, $icu->confidence, $icu->status);
 		}
 		if ( CHARDET_PY != -1 ) {
+			$py = chardet_detect ($fp, $s, CHARDET_PY);
 			printf ("PY  : Encoding -> %-12s, Confidence -> %3d, Status -> %d\n",
 				$py->encoding, $py->confidence, $py->status);
-			$py = chardet_detect ($fp, $s, CHARDET_PY);
 		}
 		echo "\n";
 

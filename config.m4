@@ -180,18 +180,31 @@ if test "$PHP_CHARDET" != "no"; then
 		AC_MSG_RESULT([$PYLIB])
 
 		PYLIBNAME="python$PYVER"
-		PYLIBOPT="-l$PYLIBNAME"
-		PYPREFIX="`$PYEXEC -c \"import sys; print(sys.prefix)\"`"
+		PYMBYTEMARK="m"
 		
 		AC_MSG_CHECKING([for python C library])
 		SEARCHPATH="lib64 lib local/lib64 local/lib"
 		for i in $SEARCHPATH
 		do
-			if test -f $PYPREFIX/$i/lib$PYLIBNAME.$SHLIB_SUFFIX_NAME -o -f $PYPREFIX/$i/lib$PYLIBNAME.a ; then
+			if test -f $PYPREFIX/$i/lib$PYLIBNAME.$SHLIB_SUFFIX_NAME ; then
+				PYLIBDIR=$PYPREFIX/$i
+				break
+			elif test -f $PYPREFIX/$i/lib$PYLIBNAME.a ; then
+				PYLIBDIR=$PYPREFIX/$i
+				break
+			elif test -f $PYPREFIX/$i/lib$PYLIBNAME$PYMBYTEMARK.$SHLIB_SUFFIX_NAME ; then
+				PYLIBNAME=$PYLIBNAME$PYMBYTEMARK
+				PYLIBDIR=$PYPREFIX/$i
+				break
+			elif test -f $PYPREFIX/$i/lib$PYLIBNAME$PYMBYTEMARK.a ; then
+				PYLIBNAME=$PYLIBNAME$PYMBYTEMARK
 				PYLIBDIR=$PYPREFIX/$i
 				break
 			fi
 		done
+
+		PYLIBOPT="-l$PYLIBNAME"
+		PYPREFIX="`$PYEXEC -c \"import sys; print(sys.prefix)\"`"
 
 		if test -n "$PYLIBDIR"; then
 			PY_SHARED_LIBRARY="-L$PYLIBDIR $PYLIBOPT"
@@ -201,9 +214,14 @@ if test "$PHP_CHARDET" != "no"; then
 			$PYEXEC -c "import chardet" >& /dev/null
 			if test $? = 0 ; then
 				PY_CHARDET_VERSION=`$PYEXEC -c "import chardet; print chardet.__version__" 2> /dev/null`
+				IFS="." read PY_CHARDET_MAJOR_VERSION PY_CHARDET_MINOR_VERSION PY_CHARDET_PATCH_VERSION <<< "$PY_CHARDET_VERSION"
+				PY_NUMERIC_VERSION=`printf "%d%02d%02d" "$PY_CHARDET_MAJOR_VERSION" "$PY_CHARDET_MINOR_VERSION" "$PY_CHARDET_PATCH_VERSION"`
 				AC_MSG_RESULT([$PY_CHARDET_VERSION support])
 				AC_DEFINE(HAVE_PY_CHARDET,1,[Python Chardet support])
 				AC_DEFINE_UNQUOTED(PY_CHARDET_VERSION,"$PY_CHARDET_VERSION", [Python Chardec version])
+				AC_DEFINE_UNQUOTED(PY_CHARDET_MAJOR_VERSION,"$PY_CHARDET_MAJOR_VERSION", [Python Chardet major version])
+				AC_DEFINE_UNQUOTED(PY_CHARDET_MINOR_VERSION,"$PY_CHARDET_MINOR_VERSION", [Python Chardet minor version])
+				AC_DEFINE_UNQUOTED(PY_CHARDET_PATCH_VERSION,"$PY_CHARDET_PATCH_VERSION", [Python Chardet patch version])
 			else
 				AC_MSG_RESULT([no support. Can't support Python Chardet])
 			fi
