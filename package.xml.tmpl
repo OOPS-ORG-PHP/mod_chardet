@@ -25,6 +25,10 @@
 	</stability>
 	<license uri="https://raw.githubusercontent.com/OOPS-ORG-PHP/mod_chardet/master/LICENSE">MPL v1.1 or GPL v2</license>
 	<notes>
+		- check build minimum php version #1
+		- build failure on PHP 8 #2
+		- segfault occurs when chardet_detect is multiple call with CHARDET_PY flag #10
+		- support python 3 for py chardet #11
 	</notes>
 	<contents>
 		<dir name="/">
@@ -68,6 +72,10 @@
 			<version><release>1.0.4</release><api>1.0.0</api></version>
 			<date>@curdate@</date>
 			<notes>
+				- check build minimum php version #1
+				- build failure on PHP 8 #2
+				- segfault occurs when chardet_detect is multiple call with CHARDET_PY flag #10
+				- support python 3 for py chardet #11
 			</notes>
 		</release>
 		<release>
@@ -76,16 +84,6 @@
 			<date>2020-05-25</date>
 			<notes>
 				- Support PHP 7.4
-			</notes>
-		</release>
-		<release>
-			<stability><release>stable</release><api>stable</api></stability>
-			<version><release>0.0.5</release><api>0.0.1</api></version>
-			<date>2016-07-06</date>
-			<notes>
-				- for PHP3/4/5 branch
-				- add make test scripts
-				- support detect_handledata_r for binary safe problems (libchardet >= 1.0.5)
 			</notes>
 		</release>
 		<release>
@@ -112,34 +110,6 @@
 			<notes>
 				- support over php 7
 				- unsupport under php 3/4/5
-			</notes>
-		</release>
-		<release>
-			<stability><release>stable</release><api>stable</api></stability>
-			<version><release>0.0.4</release><api>0.0.1</api></version>
-			<date>2016-07-06</date>
-			<notes>
-				- fixed deprecated zend_get_parameters_ex
-				- support OOP method and exception
-				- support PHP 5.4
-			</notes>
-		</release>
-		<release>
-			<stability><release>stable</release><api>stable</api></stability>
-			<version><release>0.0.3</release><api>0.0.1</api></version>
-			<date>2016-07-06</date>
-			<notes>
-				- fixed config.m4 shell test syntax
-				- fixed compile error when undefined HAVE_ICU_CHARDET
-			</notes>
-		</release>
-		<release>
-			<stability><release>stable</release><api>stable</api></stability>
-			<version><release>0.0.2</release><api>0.0.1</api></version>
-			<date>2016-07-06</date>
-			<notes>
-				- changed moz to py
-				- add mozilla universal charset detect mode with c library
 			</notes>
 		</release>
 	</changelog>
