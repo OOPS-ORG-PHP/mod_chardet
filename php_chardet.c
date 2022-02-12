@@ -1,5 +1,5 @@
 /*
- * Copyright 2021. JoungKyun.Kim all rights reserved.
+ * Copyright 2022. JoungKyun.Kim All rights reserved.
  *
  * This file is part of mod_chardet
  *
@@ -21,14 +21,14 @@
  * Project: mod_chardet :: Character set detect API
  * File:    mod_chardet.c
  *
- * Copyright 2021. JoungKyun.Kim all rights reserved.
+ * Copyright 2022. JoungKyun.Kim All rights reserved.
  *
  * LICENSE: MPL or GPL
  *
  * @category    Charset
  * @package     mod_chardet
  * @author      JoungKyun.Kim <http://oops.org>
- * @copyright   2021. JoungKyun.Kim
+ * @copyright   2022. JoungKyun.Kim
  * @license     MPL or GPL
  * @since       File available since release 0.0.1
  */

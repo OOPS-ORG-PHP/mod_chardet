@@ -1,5 +1,5 @@
 /*
- * Copyright 2021. JoungKyun.Kim all rights reserved
+ * Copyright 2022. JoungKyun.Kim All rights reserved
  *
  * This file is part of mod_chardet
  *
